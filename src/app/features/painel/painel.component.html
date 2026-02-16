@@ -107,6 +107,16 @@
             size="small"
             (onClick)="aplicarFiltroTempo('tudo')"
           />
+          @if (filtroTempo() !== 'tudo') {
+            <p-button 
+              icon="pi pi-times" 
+              [text]="true" 
+              severity="secondary"
+              size="small"
+              (onClick)="aplicarFiltroTempo('tudo')"
+              pTooltip="Limpar filtro de período"
+            />
+          }
         </div>
       </p-card>
     </div>
@@ -288,24 +298,48 @@
                 <label class="block text-sm font-medium text-surface-700 dark:text-surface-200 mb-2">
                   Data Início
                 </label>
-                <p-datepicker 
-                  [(ngModel)]="filtroTabelaDataInicio"
-                  [showIcon]="true"
-                  placeholder="Selecione"
-                  styleClass="w-full"
-                />
+                <div class="flex gap-2">
+                  <p-datepicker 
+                    [ngModel]="filtroTabelaDataInicio()"
+                    (ngModelChange)="filtroTabelaDataInicio.set($event); aplicarFiltrosTabela()"
+                    [showIcon]="true"
+                    placeholder="Selecione"
+                    styleClass="flex-1"
+                  />
+                  @if (filtroTabelaDataInicio()) {
+                    <p-button 
+                      icon="pi pi-times" 
+                      [text]="true" 
+                      severity="secondary"
+                      size="small"
+                      (onClick)="limparFiltroDataInicio()"
+                    />
+                  }
+                </div>
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-surface-700 dark:text-surface-200 mb-2">
                   Data Fim
                 </label>
-                <p-datepicker 
-                  [(ngModel)]="filtroTabelaDataFim"
-                  [showIcon]="true"
-                  placeholder="Selecione"
-                  styleClass="w-full"
-                />
+                <div class="flex gap-2">
+                  <p-datepicker 
+                    [ngModel]="filtroTabelaDataFim()"
+                    (ngModelChange)="filtroTabelaDataFim.set($event); aplicarFiltrosTabela()"
+                    [showIcon]="true"
+                    placeholder="Selecione"
+                    styleClass="flex-1"
+                  />
+                  @if (filtroTabelaDataFim()) {
+                    <p-button 
+                      icon="pi pi-times" 
+                      [text]="true" 
+                      severity="secondary"
+                      size="small"
+                      (onClick)="limparFiltroDataFim()"
+                    />
+                  }
+                </div>
               </div>
               
               <div>
@@ -313,7 +347,8 @@
                   Categoria
                 </label>
                 <p-select 
-                  [(ngModel)]="filtroTabelaCategoria"
+                  [ngModel]="filtroTabelaCategoria()"
+                  (ngModelChange)="filtroTabelaCategoria.set($event); aplicarFiltrosTabela()"
                   [options]="categoriasDisponiveis()"
                   placeholder="Todas"
                   styleClass="w-full"
@@ -325,14 +360,40 @@
                 <label class="block text-sm font-medium text-surface-700 dark:text-surface-200 mb-2">
                   Buscar Nome
                 </label>
-                <input 
-                  pInputText 
-                  [(ngModel)]="filtroTabelaNome"
-                  placeholder="Nome do item"
-                  class="w-full"
-                />
+                <div class="flex gap-2">
+                  <input 
+                    pInputText 
+                    [ngModel]="filtroTabelaNome()"
+                    (ngModelChange)="filtroTabelaNome.set($event); aplicarFiltrosTabela()"
+                    placeholder="Nome do item"
+                    class="flex-1"
+                  />
+                  @if (filtroTabelaNome()) {
+                    <p-button 
+                      icon="pi pi-times" 
+                      [text]="true" 
+                      severity="secondary"
+                      size="small"
+                      (onClick)="limparFiltroNome()"
+                    />
+                  }
+                </div>
               </div>
             </div>
+            
+            <!-- Botão Limpar Todos os Filtros -->
+            @if (temFiltrosAtivos()) {
+              <div class="mt-4 flex justify-end">
+                <p-button 
+                  label="Limpar Filtros" 
+                  icon="pi pi-filter-slash" 
+                  [outlined]="true" 
+                  severity="secondary"
+                  size="small"
+                  (onClick)="limparTodosFiltros()"
+                />
+              </div>
+            }
           </div>
         </ng-template>
         

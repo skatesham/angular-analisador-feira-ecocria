@@ -93,11 +93,11 @@ export class PainelComponent implements OnInit, ComponentCanDeactivate {
   // Stable periods availability (computed once on init)
   periodosDisponiveisStable = signal({ tem1Ano: false, tem3Anos: false });
 
-  // Filtros da tabela
-  filtroTabelaDataInicio: Date | null = null;
-  filtroTabelaDataFim: Date | null = null;
-  filtroTabelaCategoria: string | null = null;
-  filtroTabelaNome: string = '';
+  // Filtros da tabela (signals para reatividade)
+  filtroTabelaDataInicio = signal<Date | null>(null);
+  filtroTabelaDataFim = signal<Date | null>(null);
+  filtroTabelaCategoria = signal<string | null>(null);
+  filtroTabelaNome = signal<string>('');
 
   kpis = computed(() => this.analytics.calcularKPIs());
   itensVendidos = computed(() => this.analytics.calcularItensVendidos());
@@ -159,16 +159,19 @@ export class PainelComponent implements OnInit, ComponentCanDeactivate {
     const vendas = this.vendas();
     const detalhes: any[] = [];
     
+    // Get filter values from signals
+    const dataInicio = this.filtroTabelaDataInicio();
+    const dataFim = this.filtroTabelaDataFim();
+    const categoria = this.filtroTabelaCategoria();
+    const nome = this.filtroTabelaNome();
+    
     vendas.forEach(venda => {
       venda.itens.forEach(item => {
         // Aplicar filtros
-        if (this.filtroTabelaDataInicio && venda.data < this.filtroTabelaDataInicio) return;
-        if (this.filtroTabelaDataFim && venda.data > this.filtroTabelaDataFim) return;
-        if (this.filtroTabelaCategoria && item.tipo !== this.filtroTabelaCategoria) return;
-        if (this.filtroTabelaNome && !item.nome.toLowerCase().includes(this.filtroTabelaNome.toLowerCase())) return;
-        
-        // Filtrar subcategorias sem categoria (se filtro de categoria estiver ativo)
-        if (this.filtroTabelaCategoria && !item.categoria) return;
+        if (dataInicio && venda.data < dataInicio) return;
+        if (dataFim && venda.data > dataFim) return;
+        if (categoria && item.tipo !== categoria) return;
+        if (nome && !item.nome.toLowerCase().includes(nome.toLowerCase())) return;
         
         detalhes.push({
           data: venda.data,
@@ -563,7 +566,7 @@ export class PainelComponent implements OnInit, ComponentCanDeactivate {
   private gerarGraficoSubcategorias(): any {
     const limite = this.isMobile() ? 5 : 10;
     const subcategorias = this.analytics.calcularTopSubcategorias(limite);
-    const cores = ['#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899'];
+    const cores = ['#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16'];
     
     if (this.tipoGraficoSubcategorias() === 'pie') {
       return {
@@ -815,6 +818,34 @@ export class PainelComponent implements OnInit, ComponentCanDeactivate {
   canDeactivate(): boolean {
     // Allow navigation if no unsaved changes or if analysis is already saved
     return !this.temAlteracoesNaoSalvas() || !!this.analiseCarregadaId();
+  }
+
+  aplicarFiltrosTabela(): void {
+    // No longer needed - signals automatically trigger recomputation
+    // Kept for compatibility with template
+  }
+
+  limparFiltroDataInicio(): void {
+    this.filtroTabelaDataInicio.set(null);
+  }
+
+  limparFiltroDataFim(): void {
+    this.filtroTabelaDataFim.set(null);
+  }
+
+  limparFiltroNome(): void {
+    this.filtroTabelaNome.set('');
+  }
+
+  temFiltrosAtivos(): boolean {
+    return !!(this.filtroTabelaDataInicio() || this.filtroTabelaDataFim() || this.filtroTabelaCategoria() || this.filtroTabelaNome());
+  }
+
+  limparTodosFiltros(): void {
+    this.filtroTabelaDataInicio.set(null);
+    this.filtroTabelaDataFim.set(null);
+    this.filtroTabelaCategoria.set(null);
+    this.filtroTabelaNome.set('');
   }
 
   private gerarGraficoParticipacao(): any {

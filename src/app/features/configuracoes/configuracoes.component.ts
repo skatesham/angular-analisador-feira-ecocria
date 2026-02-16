@@ -9,11 +9,12 @@ import { ToastModule } from 'primeng/toast';
 import { FormsModule } from '@angular/forms';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { StorageService } from '../../core/services/storage.service';
 
 @Component({
   selector: 'app-configuracoes',
   imports: [CommonModule, FormsModule, CardModule, ButtonModule, SelectButtonModule, ToggleSwitchModule, ConfirmDialogModule, ToastModule, TranslateModule],
-  providers: [ConfirmationService, MessageService],
+  providers: [MessageService],
   templateUrl: './configuracoes.component.html',
   styles: [`
     :host {
@@ -34,6 +35,7 @@ export class ConfiguracoesComponent {
   private translate = inject(TranslateService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
+  private storageService = inject(StorageService);
 
   idiomas = [
     { label: 'Português (BR)', value: 'pt-BR' },
@@ -77,30 +79,35 @@ export class ConfiguracoesComponent {
     });
   }
 
-  private limparTodosDados(): void {
-    // Limpar localStorage
-    const locale = localStorage.getItem('locale');
-    const theme = localStorage.getItem('theme');
-    localStorage.clear();
-    if (locale) localStorage.setItem('locale', locale);
-    if (theme) localStorage.setItem('theme', theme);
+  private async limparTodosDados(): Promise<void> {
+    try {
+      // Desabilitar sessão privada para permitir exclusão
+      this.storageService.setSessaoPrivada(false);
+      
+      // Apagar todas as análises do histórico usando o StorageService
+      await this.storageService.apagarTudo();
+      
+      // Limpar localStorage (preservando locale e theme)
+      const locale = localStorage.getItem('locale');
+      const theme = localStorage.getItem('theme');
+      localStorage.clear();
+      if (locale) localStorage.setItem('locale', locale);
+      if (theme) localStorage.setItem('theme', theme);
 
-    // Limpar IndexedDB (se existir)
-    if (window.indexedDB) {
-      indexedDB.databases().then(databases => {
-        databases.forEach(db => {
-          if (db.name) {
-            indexedDB.deleteDatabase(db.name);
-          }
-        });
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Dados Apagados',
+        detail: 'Todos os dados foram removidos com sucesso.',
+        life: 3000
+      });
+    } catch (error) {
+      console.error('Erro ao apagar dados:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao apagar dados. Tente novamente.',
+        life: 5000
       });
     }
-
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Dados Apagados',
-      detail: 'Todos os dados foram removidos com sucesso.',
-      life: 3000
-    });
   }
 }
