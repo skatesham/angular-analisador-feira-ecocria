@@ -92,8 +92,11 @@ export class PainelComponent implements OnInit {
 
   aplicarFiltros(): void {
     const filtros: FiltrosAnalise = {
-      dataInicio: this.dataInicio() || undefined,
-      dataFim: this.dataFim() || undefined,
+      tempo: (this.dataInicio() || this.dataFim()) ? {
+        tipo: 'custom',
+        dataInicio: this.dataInicio() || undefined,
+        dataFim: this.dataFim() || undefined
+      } : undefined,
       categorias: this.categoriasSelecionadas().length > 0 ? this.categoriasSelecionadas() : undefined,
       buscaTexto: this.buscaTexto() || undefined
     };

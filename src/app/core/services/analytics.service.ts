@@ -21,8 +21,11 @@ export class AnalyticsService {
     const filtros = this.filtros();
 
     return vendas.filter(venda => {
-      if (filtros.dataInicio && venda.data < filtros.dataInicio) return false;
-      if (filtros.dataFim && venda.data > filtros.dataFim) return false;
+      // Filtro de tempo
+      if (filtros.tempo) {
+        if (filtros.tempo.dataInicio && venda.data < filtros.tempo.dataInicio) return false;
+        if (filtros.tempo.dataFim && venda.data > filtros.tempo.dataFim) return false;
+      }
       
       if (filtros.categorias && filtros.categorias.length > 0) {
         const temCategoria = venda.itens.some(item => 
