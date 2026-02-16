@@ -17,7 +17,7 @@ import { GridComponent, TooltipComponent, LegendComponent, TitleComponent } from
 import { CanvasRenderer } from 'echarts/renderers';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { ExportService } from '../../core/services/export.service';
-import { FiltrosAnalise } from '../../core/models/analytics.model';
+import { FiltrosAnalise, FiltroTempoTipo } from '../../core/models/analytics.model';
 
 // Registrar componentes do ECharts
 echarts.use([
@@ -55,6 +55,7 @@ export class PainelComponent implements OnInit {
   private exportService = inject(ExportService);
   private router = inject(Router);
 
+  filtroTempo = signal<FiltroTempoTipo>('tudo');
   dataInicio = signal<Date | null>(null);
   dataFim = signal<Date | null>(null);
   categoriasDisponiveis = signal<string[]>([]);
@@ -67,6 +68,11 @@ export class PainelComponent implements OnInit {
   evolucao = computed(() => this.analytics.calcularEvolucaoTemporal('semana'));
   insights = computed(() => this.analytics.gerarInsights());
   vendas = computed(() => this.analytics.vendasFiltradas());
+  totalItens = computed(() => {
+    return this.vendas().reduce((total, venda) => {
+      return total + venda.itens.reduce((sum, item) => sum + item.quantidade, 0);
+    }, 0);
+  });
 
   graficoTopItens = computed(() => this.gerarGraficoTopItens());
   graficoEvolucao = computed(() => this.gerarGraficoEvolucao());
@@ -88,6 +94,43 @@ export class PainelComponent implements OnInit {
       });
     });
     this.categoriasDisponiveis.set(Array.from(tipos).sort());
+  }
+
+  aplicarFiltroTempo(tipo: FiltroTempoTipo): void {
+    this.filtroTempo.set(tipo);
+    
+    const hoje = new Date();
+    let dataInicio: Date | undefined;
+    
+    switch (tipo) {
+      case 'ultima-semana':
+        dataInicio = new Date(hoje);
+        dataInicio.setDate(hoje.getDate() - 7);
+        break;
+      case 'ultimo-mes':
+        dataInicio = new Date(hoje);
+        dataInicio.setMonth(hoje.getMonth() - 1);
+        break;
+      case 'ultimos-3-meses':
+        dataInicio = new Date(hoje);
+        dataInicio.setMonth(hoje.getMonth() - 3);
+        break;
+      case 'tudo':
+        dataInicio = undefined;
+        break;
+    }
+    
+    const filtros: FiltrosAnalise = {
+      tempo: dataInicio ? {
+        tipo: tipo,
+        dataInicio: dataInicio,
+        dataFim: hoje
+      } : undefined,
+      categorias: this.categoriasSelecionadas().length > 0 ? this.categoriasSelecionadas() : undefined,
+      buscaTexto: this.buscaTexto() || undefined
+    };
+    
+    this.analytics.setFiltros(filtros);
   }
 
   aplicarFiltros(): void {

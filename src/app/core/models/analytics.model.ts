@@ -76,7 +76,7 @@ export interface AlertaQualidade {
   acao?: string;
 }
 
-export type FiltroTempoTipo = 'ultima-semana' | 'ultimo-mes' | 'ultimos-3-meses' | 'custom';
+export type FiltroTempoTipo = 'ultima-semana' | 'ultimo-mes' | 'ultimos-3-meses' | 'tudo' | 'custom';
 
 export interface FiltroTempo {
   tipo: FiltroTempoTipo;
