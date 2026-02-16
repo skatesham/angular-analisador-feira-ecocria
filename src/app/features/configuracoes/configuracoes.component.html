@@ -1,0 +1,152 @@
+<div class="min-h-screen bg-surface-50 dark:bg-surface-950 py-8 md:py-12">
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="max-w-3xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-surface-900 dark:text-surface-0 mb-3">
+          Configurações
+        </h1>
+        <p class="text-surface-600 dark:text-surface-300">
+          Personalize sua experiência
+        </p>
+      </div>
+
+      <!-- Idioma -->
+      <p-card class="mb-6">
+        <ng-template pTemplate="header">
+          <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+            <h2 class="text-xl font-bold text-surface-900 dark:text-surface-0 flex items-center gap-2">
+              <i class="pi pi-globe"></i>
+              Idioma
+            </h2>
+          </div>
+        </ng-template>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-200 mb-2">
+              Selecione o idioma
+            </label>
+            <p-selectbutton 
+              [options]="idiomas" 
+              [(ngModel)]="idiomaAtual"
+              (onChange)="alterarIdioma(idiomaAtual())"
+              optionLabel="label"
+              optionValue="value"
+            />
+          </div>
+          <p class="text-sm text-surface-500 dark:text-surface-400">
+            <i class="pi pi-info-circle mr-1"></i>
+            A interface será traduzida para o idioma selecionado
+          </p>
+        </div>
+      </p-card>
+
+      <!-- Tema -->
+      <p-card class="mb-6">
+        <ng-template pTemplate="header">
+          <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+            <h2 class="text-xl font-bold text-surface-900 dark:text-surface-0 flex items-center gap-2">
+              <i class="pi pi-palette"></i>
+              Aparência
+            </h2>
+          </div>
+        </ng-template>
+
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-200 mb-1">
+                Modo Escuro
+              </label>
+              <p class="text-sm text-surface-500 dark:text-surface-400">
+                Ativar tema escuro para reduzir o brilho da tela
+              </p>
+            </div>
+            <p-toggleswitch 
+              [(ngModel)]="darkMode"
+              (onChange)="toggleDarkMode()"
+            />
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Privacidade -->
+      <p-card class="mb-6">
+        <ng-template pTemplate="header">
+          <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+            <h2 class="text-xl font-bold text-surface-900 dark:text-surface-0 flex items-center gap-2">
+              <i class="pi pi-shield"></i>
+              Privacidade
+            </h2>
+          </div>
+        </ng-template>
+
+        <div class="space-y-4">
+          <div class="p-4 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+            <h3 class="font-semibold text-surface-900 dark:text-surface-0 mb-2 flex items-center gap-2">
+              <i class="pi pi-check-circle text-emerald-500"></i>
+              100% Local
+            </h3>
+            <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">
+              Todos os seus dados são processados localmente no seu navegador. 
+              Nenhuma informação é enviada para servidores externos.
+            </p>
+            <ul class="space-y-2 text-sm text-surface-600 dark:text-surface-300">
+              <li class="flex items-center gap-2">
+                <i class="pi pi-check text-emerald-500"></i>
+                Sem rastreamento
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="pi pi-check text-emerald-500"></i>
+                Sem cookies de terceiros
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="pi pi-check text-emerald-500"></i>
+                Dados ficam no seu dispositivo
+              </li>
+            </ul>
+          </div>
+
+          <div class="p-4 bg-sky-500/10 rounded-lg border border-sky-500/20">
+            <h3 class="font-semibold text-surface-900 dark:text-surface-0 mb-2 flex items-center gap-2">
+              <i class="pi pi-info-circle text-sky-500"></i>
+              Sessão Privada
+            </h3>
+            <p class="text-sm text-surface-700 dark:text-surface-200">
+              Por padrão, seus dados não são salvos. Ao fechar o navegador, tudo é apagado. 
+              Você pode optar por salvar localmente no IndexedDB se preferir.
+            </p>
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Sobre -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+            <h2 class="text-xl font-bold text-surface-900 dark:text-surface-0 flex items-center gap-2">
+              <i class="pi pi-info"></i>
+              Sobre
+            </h2>
+          </div>
+        </ng-template>
+
+        <div class="space-y-3 text-sm text-surface-600 dark:text-surface-300">
+          <div class="flex justify-between">
+            <span class="font-semibold">Versão:</span>
+            <span>1.0.0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold">Tecnologias:</span>
+            <span>Angular 20 + PrimeNG 20</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold">Licença:</span>
+            <span>MIT</span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

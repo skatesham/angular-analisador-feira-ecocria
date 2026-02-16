@@ -1,0 +1,261 @@
+<div class="min-h-screen bg-surface-50 dark:bg-surface-950 py-8 md:py-12">
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="max-w-5xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-surface-900 dark:text-surface-0 mb-3">
+          Analisador de Vendas de Feira
+        </h1>
+        <p class="text-lg text-surface-600 dark:text-surface-300">
+          Envie seus arquivos TXT de anotações de feira
+        </p>
+      </div>
+
+      <!-- Upload Area -->
+      @if (etapaAtual() === 'upload') {
+        <p-card class="mb-6">
+          <p-fileUpload
+            name="files[]"
+            [multiple]="true"
+            accept=".txt,.csv,.xlsx"
+            [maxFileSize]="10000000"
+            [showUploadButton]="false"
+            [showCancelButton]="false"
+            (onSelect)="onFileSelect($event)"
+            [auto]="true"
+            chooseLabel="Selecionar Arquivos"
+            chooseIcon="pi pi-upload"
+          >
+            <ng-template pTemplate="content">
+              <div class="text-center py-12">
+                <i class="pi pi-cloud-upload text-6xl text-surface-400 dark:text-surface-500 mb-4"></i>
+                <p class="text-xl text-surface-700 dark:text-surface-200 mb-2">
+                  Arraste arquivos aqui ou clique para selecionar
+                </p>
+                <p class="text-sm text-surface-500 dark:text-surface-400">
+                  Aceita TXT, CSV e XLSX (máx 10MB por arquivo)
+                </p>
+              </div>
+            </ng-template>
+          </p-fileUpload>
+        </p-card>
+
+        <!-- Instruções -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-lg p-4 border border-surface-200 dark:border-surface-700">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="pi pi-info-circle text-primary"></i>
+              <span class="font-semibold text-surface-900 dark:text-surface-0">Formato TXT</span>
+            </div>
+            <p class="text-sm text-surface-600 dark:text-surface-300">
+              Suas anotações de feira com data e produtos
+            </p>
+          </div>
+
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-lg p-4 border border-surface-200 dark:border-surface-700">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="pi pi-file text-primary"></i>
+              <span class="font-semibold text-surface-900 dark:text-surface-0">Múltiplos Arquivos</span>
+            </div>
+            <p class="text-sm text-surface-600 dark:text-surface-300">
+              Envie várias feiras de uma vez
+            </p>
+          </div>
+
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-lg p-4 border border-surface-200 dark:border-surface-700">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="pi pi-lock text-primary"></i>
+              <span class="font-semibold text-surface-900 dark:text-surface-0">100% Local</span>
+            </div>
+            <p class="text-sm text-surface-600 dark:text-surface-300">
+              Processamento no seu navegador
+            </p>
+          </div>
+        </div>
+      }
+
+      <!-- Processamento -->
+      @if (etapaAtual() !== 'upload' && etapaAtual() !== 'erro') {
+        <p-card class="mb-6">
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-2">
+              {{ mensagemEtapa() }}
+            </h2>
+            <p class="text-surface-600 dark:text-surface-300">
+              Processando {{ arquivos().length }} arquivo(s)
+            </p>
+          </div>
+
+          <p-progressBar 
+            [value]="progresso()" 
+            [showValue]="true"
+            styleClass="mb-6"
+          />
+
+          <!-- Etapas -->
+          <div class="space-y-3">
+            @for (etapa of etapas; track etapa.key) {
+              <div class="flex items-center gap-3">
+                @if (progresso() >= etapa.progresso) {
+                  <i class="pi pi-check-circle text-emerald-500 text-xl"></i>
+                } @else {
+                  <i class="pi pi-circle text-surface-300 dark:text-surface-600 text-xl"></i>
+                }
+                <span 
+                  class="text-surface-700 dark:text-surface-200"
+                  [class.font-semibold]="progresso() >= etapa.progresso"
+                >
+                  {{ etapa.label }}
+                </span>
+              </div>
+            }
+          </div>
+        </p-card>
+      }
+
+      <!-- Resultado -->
+      @if (etapaAtual() === 'concluido' && resultado()) {
+        <p-card class="mb-6">
+          <div class="text-center mb-6">
+            <i class="pi pi-check-circle text-6xl text-emerald-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-2">
+              Processamento Concluído!
+            </h2>
+            <p class="text-surface-600 dark:text-surface-300">
+              Seus dados foram processados com sucesso
+            </p>
+          </div>
+
+          <!-- Estatísticas -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="text-center p-4 bg-surface-50 dark:bg-surface-800 rounded-lg">
+              <div class="text-3xl font-bold text-primary mb-1">
+                {{ resultado()!.estatisticas.totalArquivos }}
+              </div>
+              <div class="text-sm text-surface-600 dark:text-surface-300">
+                Arquivos
+              </div>
+            </div>
+
+            <div class="text-center p-4 bg-surface-50 dark:bg-surface-800 rounded-lg">
+              <div class="text-3xl font-bold text-primary mb-1">
+                {{ resultado()!.estatisticas.vendasGeradas }}
+              </div>
+              <div class="text-sm text-surface-600 dark:text-surface-300">
+                Vendas
+              </div>
+            </div>
+
+            <div class="text-center p-4 bg-surface-50 dark:bg-surface-800 rounded-lg">
+              <div class="text-3xl font-bold text-primary mb-1">
+                {{ resultado()!.estatisticas.itensProcessados }}
+              </div>
+              <div class="text-sm text-surface-600 dark:text-surface-300">
+                Itens
+              </div>
+            </div>
+
+            <div class="text-center p-4 bg-surface-50 dark:bg-surface-800 rounded-lg">
+              <div class="text-3xl font-bold text-primary mb-1">
+                {{ resultado()!.estatisticas.linhasProcessadas }}
+              </div>
+              <div class="text-sm text-surface-600 dark:text-surface-300">
+                Linhas
+              </div>
+            </div>
+          </div>
+
+          <!-- Warnings -->
+          @if (resultado()!.estatisticas.warnings.length > 0) {
+            <div class="mb-6">
+              <h3 class="font-semibold text-surface-900 dark:text-surface-0 mb-3">
+                Avisos
+              </h3>
+              <div class="space-y-2">
+                @for (warning of resultado()!.estatisticas.warnings; track $index) {
+                  <p-message 
+                    severity="warn" 
+                    [text]="warning.mensagem"
+                    styleClass="w-full"
+                  />
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Erros -->
+          @if (erros().length > 0) {
+            <div class="mb-6">
+              <h3 class="font-semibold text-surface-900 dark:text-surface-0 mb-3">
+                Erros
+              </h3>
+              <div class="space-y-2">
+                @for (erro of erros(); track $index) {
+                  <p-message 
+                    severity="error" 
+                    [text]="erro"
+                    styleClass="w-full"
+                  />
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Ações -->
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <p-button 
+              label="Ver Painel de Vendas" 
+              icon="pi pi-chart-line"
+              size="large"
+              (onClick)="irParaPainel()"
+            />
+            <p-button 
+              label="Processar Outros Arquivos" 
+              icon="pi pi-refresh"
+              [outlined]="true"
+              size="large"
+              (onClick)="reiniciar()"
+            />
+          </div>
+        </p-card>
+      }
+
+      <!-- Erro -->
+      @if (etapaAtual() === 'erro') {
+        <p-card>
+          <div class="text-center mb-6">
+            <i class="pi pi-times-circle text-6xl text-red-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-2">
+              Erro no Processamento
+            </h2>
+            <p class="text-surface-600 dark:text-surface-300">
+              Ocorreu um erro ao processar seus arquivos
+            </p>
+          </div>
+
+          @if (erros().length > 0) {
+            <div class="mb-6">
+              <div class="space-y-2">
+                @for (erro of erros(); track $index) {
+                  <p-message 
+                    severity="error" 
+                    [text]="erro"
+                    styleClass="w-full"
+                  />
+                }
+              </div>
+            </div>
+          }
+
+          <div class="text-center">
+            <p-button 
+              label="Tentar Novamente" 
+              icon="pi pi-refresh"
+              (onClick)="reiniciar()"
+            />
+          </div>
+        </p-card>
+      }
+    </div>
+  </div>
+</div>

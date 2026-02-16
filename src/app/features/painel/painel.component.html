@@ -1,0 +1,200 @@
+<div class="min-h-screen bg-surface-50 dark:bg-surface-950 py-8 md:py-12">
+  <div class="container mx-auto px-4 md:px-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-bold text-surface-900 dark:text-surface-0 mb-2">
+          Painel de Vendas
+        </h1>
+        <p class="text-surface-600 dark:text-surface-300">
+          {{ vendas().length }} venda(s) no período
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <p-button 
+          label="Exportar CSV" 
+          icon="pi pi-download"
+          [outlined]="true"
+          (onClick)="exportarCsvCompleto()"
+        />
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+      @for (kpi of kpis(); track kpi.label) {
+        <div 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 zoom-in-50 animate-duration-1000"
+          class="bg-surface-0 dark:bg-surface-900 rounded-xl p-6 border border-surface-200 dark:border-surface-700"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <i [class]="'pi ' + kpi.icone + ' text-2xl text-primary'"></i>
+          </div>
+          <div class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-1">
+            @if (kpi.formato === 'moeda') {
+              R$ {{ kpi.valor | number:'1.2-2' }}
+            } @else if (kpi.formato === 'percentual') {
+              {{ kpi.valor | number:'1.1-1' }}%
+            } @else {
+              {{ kpi.valor }}
+            }
+          </div>
+          <div class="text-sm text-surface-600 dark:text-surface-300">
+            {{ kpi.label }}
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Insights "O que isso sugere" -->
+    @if (insights().length > 0) {
+      <div 
+        pAnimateOnScroll 
+        enterClass="animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000"
+        class="mb-8"
+      >
+        <p-card>
+          <ng-template pTemplate="header">
+            <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+              <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-0 flex items-center gap-2">
+                <i class="pi pi-lightbulb text-yellow-500"></i>
+                O que isso sugere
+              </h2>
+            </div>
+          </ng-template>
+          
+          <div class="space-y-4">
+            @for (insight of insights(); track $index) {
+              <div class="flex gap-4 p-4 rounded-lg bg-surface-50 dark:bg-surface-800">
+                <div class="flex-shrink-0">
+                  <p-tag 
+                    [value]="insight.tipo" 
+                    [severity]="getSeveridadeInsight(insight.tipo)"
+                  />
+                </div>
+                <div class="flex-1">
+                  <h3 class="font-semibold text-surface-900 dark:text-surface-0 mb-1">
+                    {{ insight.titulo }}
+                  </h3>
+                  <p class="text-surface-700 dark:text-surface-200 mb-2">
+                    {{ insight.descricao }}
+                  </p>
+                  <p class="text-sm text-surface-500 dark:text-surface-400">
+                    <i class="pi pi-info-circle mr-1"></i>
+                    {{ insight.explicacao }}
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+        </p-card>
+      </div>
+    }
+
+    <!-- Gráficos -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Top Produtos -->
+      <div 
+        pAnimateOnScroll 
+        enterClass="animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000"
+      >
+        <p-card>
+          <ng-template pTemplate="header">
+            <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+              <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
+                Top 10 Produtos
+              </h3>
+            </div>
+          </ng-template>
+          <div echarts [options]="graficoTopItens()" class="h-96"></div>
+        </p-card>
+      </div>
+
+      <!-- Participação por Tipo -->
+      <div 
+        pAnimateOnScroll 
+        enterClass="animate-enter fade-in-10 slide-in-from-r-8 animate-duration-1000"
+      >
+        <p-card>
+          <ng-template pTemplate="header">
+            <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+              <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
+                Participação por Tipo
+              </h3>
+            </div>
+          </ng-template>
+          <div echarts [options]="graficoParticipacao()" class="h-96"></div>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Evolução Temporal -->
+    <div 
+      pAnimateOnScroll 
+      enterClass="animate-enter fade-in-10 slide-in-from-b-20 animate-duration-1000"
+      class="mb-8"
+    >
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+            <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
+              Evolução Semanal
+            </h3>
+          </div>
+        </ng-template>
+        <div echarts [options]="graficoEvolucao()" class="h-96"></div>
+      </p-card>
+    </div>
+
+    <!-- Tabela de Itens -->
+    <div 
+      pAnimateOnScroll 
+      enterClass="animate-enter fade-in-10 animate-duration-1000"
+    >
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+            <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
+              Detalhamento por Item
+            </h3>
+          </div>
+        </ng-template>
+        
+        <p-table 
+          [value]="itensVendidos()" 
+          [paginator]="true" 
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          [tableStyle]="{ 'min-width': '50rem' }"
+          styleClass="p-datatable-sm"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th class="text-right">Quantidade</th>
+              <th class="text-right">Receita</th>
+              <th class="text-right">Participação</th>
+              <th class="text-right">Preço Médio</th>
+              <th class="text-right">Frequência</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.nome }}</td>
+              <td>
+                <p-tag [value]="item.categoria" [severity]="'info'" />
+              </td>
+              <td class="text-right">{{ item.quantidade }}</td>
+              <td class="text-right">R$ {{ item.receita | number:'1.2-2' }}</td>
+              <td class="text-right">{{ item.participacao | number:'1.1-1' }}%</td>
+              <td class="text-right">R$ {{ item.precoMedio | number:'1.2-2' }}</td>
+              <td class="text-right">{{ item.frequencia }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+  </div>
+</div>

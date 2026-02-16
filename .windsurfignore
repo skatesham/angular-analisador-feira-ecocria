@@ -1,0 +1,60 @@
+# ============================================================
+# 🧠 WINDSURFIGNORE — Mínimo seguro e eficiente
+# ------------------------------------------------------------
+# Bloqueia segredos e pastas pesadas, mas mantém contexto útil
+# para Claude/Windsurf gerar e editar código.
+# ============================================================
+
+# 🔐 Arquivos sensíveis (credenciais, chaves, certificados)
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.crt
+*.cer
+*.csr
+*.p12
+*.pfx
+*.pub
+*.der
+*.jks
+*.keystore
+*.secrets*
+*credentials*
+secrets/
+keys/
+certs/
+config/private/
+private/
+**/credentials.*
+**/secrets.*
+
+# ⚙️ Diretórios de build/cache (performance)
+node_modules/
+dist/
+build/
+__pycache__/
+.cache/
+tmp/
+logs/
+*.log
+
+# 🎨 Arquivos binários e pesados (não úteis pra IA)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.mp3
+*.mp4
+*.mov
+*.avi
+*.zip
+*.rar
+*.tar
+*.gz
+*.7z
+
+# 💡 Mantém o essencial visível (código, markdown, config pública)
+# src/, app/, docs/, README.md, package.json, etc.

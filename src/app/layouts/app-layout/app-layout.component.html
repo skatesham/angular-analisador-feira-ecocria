@@ -1,0 +1,74 @@
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-3 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700">
+  <div class="flex items-center gap-3">
+    <p-button
+      icon="pi pi-bars"
+      [text]="true"
+      severity="secondary"
+      (onClick)="toggleSidebar()"
+      class="md:hidden"
+    />
+    <a routerLink="/app/dashboard" class="flex items-center gap-2">
+      <img src="logo.png" alt="Mana Vitae" class="h-8 w-8" />
+      <span class="hidden md:inline text-xl font-bold text-primary">Mana Vitae</span>
+    </a>
+  </div>
+
+  <nav class="hidden md:flex items-center gap-1">
+    <a routerLink="/app/dashboard" routerLinkActive="bg-primary/10 text-primary font-semibold"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="flex items-center gap-2 px-4 py-2 rounded-lg text-surface-700 dark:text-surface-200 hover:text-primary hover:bg-primary/5 transition-colors">
+      <i class="pi pi-home"></i>
+      {{ 'nav.dashboard' | translate }}
+    </a>
+    <a routerLink="/app/settings" routerLinkActive="bg-primary/10 text-primary font-semibold"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="flex items-center gap-2 px-4 py-2 rounded-lg text-surface-700 dark:text-surface-200 hover:text-primary hover:bg-primary/5 transition-colors">
+      <i class="pi pi-cog"></i>
+      {{ 'nav.settings' | translate }}
+    </a>
+  </nav>
+
+  <div class="flex items-center gap-2">
+    <app-theme-switcher />
+    <a routerLink="/auth/login">
+      <p-button
+        icon="pi pi-sign-out"
+        [label]="'nav.logout' | translate"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        (onClick)="logout()"
+      />
+    </a>
+  </div>
+</header>
+
+<!-- Mobile sidebar -->
+<p-drawer [(visible)]="sidebarVisible" [modal]="true">
+  <ng-template #header>
+    <div class="flex items-center gap-2">
+      <img src="logo.png" alt="Mana Vitae" class="h-8 w-8" />
+      <span class="text-lg font-bold text-primary">Mana Vitae</span>
+    </div>
+  </ng-template>
+  <nav class="flex flex-col gap-1 mt-4">
+    <a routerLink="/app/dashboard" routerLinkActive="bg-primary/10 text-primary font-semibold"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg text-surface-700 dark:text-surface-200 hover:text-primary hover:bg-primary/5 transition-colors text-lg"
+       (click)="sidebarVisible.set(false)">
+      <i class="pi pi-home"></i>{{ 'nav.dashboard' | translate }}
+    </a>
+    <a routerLink="/app/settings" routerLinkActive="bg-primary/10 text-primary font-semibold"
+       [routerLinkActiveOptions]="{ exact: true }"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg text-surface-700 dark:text-surface-200 hover:text-primary hover:bg-primary/5 transition-colors text-lg"
+       (click)="sidebarVisible.set(false)">
+      <i class="pi pi-cog"></i>{{ 'nav.settings' | translate }}
+    </a>
+  </nav>
+</p-drawer>
+
+<main class="pt-16 min-h-screen bg-surface-50 dark:bg-surface-950">
+  <div class="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+    <router-outlet />
+  </div>
+</main>

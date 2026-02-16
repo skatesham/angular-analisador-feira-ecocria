@@ -1,0 +1,127 @@
+{
+  "app": {
+    "title": "Mana Vitae",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "empty": "No data found"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "register": "Sign Up"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "register": "Sign Up"
+    },
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least {{min}} characters"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": "Welcome to Mana Vitae",
+      "subtitle": "Your complete platform",
+      "cta": "Get started"
+    },
+    "features": {
+      "title": "Features",
+      "auth": {
+        "title": "Auth & Security",
+        "description": "Guards, interceptors, role-based access control."
+      },
+      "i18n": {
+        "title": "i18n Ready",
+        "description": "Multi-language support with country selector."
+      },
+      "darkMode": {
+        "title": "Dark Mode",
+        "description": "Theme switcher with PrimeNG Aura preset."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "metrics": {
+      "users": "Users",
+      "revenue": "Revenue",
+      "tasks": "Tasks",
+      "thisMonth": "this month",
+      "pending": "pending"
+    },
+    "charts": {
+      "revenueTitle": "Revenue vs Expenses",
+      "trafficTitle": "Traffic Sources"
+    },
+    "components": {
+      "title": "PrimeNG Components",
+      "description": "Dialog and ConfirmDialog examples integrated into the template.",
+      "openDialog": "Open Dialog",
+      "confirmAction": "Confirm Action"
+    },
+    "dialog": {
+      "title": "Details",
+      "content": "This is a PrimeNG Dialog example integrated into the template.",
+      "featureTitle": "Ready Component",
+      "featureDescription": "Responsive dialog with dark mode and i18n support."
+    },
+    "confirm": {
+      "header": "Confirmation",
+      "message": "Are you sure you want to proceed with this action?",
+      "accepted": "Confirmed",
+      "acceptedDetail": "Action completed successfully.",
+      "rejected": "Cancelled",
+      "rejectedDetail": "Action cancelled by user."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "language": {
+      "title": "Language",
+      "select": "Select language"
+    },
+    "primary": {
+      "title": "Primary Color"
+    },
+    "surface": {
+      "title": "Surface Color"
+    },
+    "preset": {
+      "title": "Theme Preset"
+    }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close"
+  }
+}

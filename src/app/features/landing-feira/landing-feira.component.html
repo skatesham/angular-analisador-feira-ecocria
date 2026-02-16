@@ -1,0 +1,335 @@
+<div class="min-h-screen bg-surface-50 dark:bg-surface-950">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-primary/10 to-surface-0 dark:from-primary/5 dark:to-surface-900 py-20 md:py-32">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000"
+          class="text-4xl md:text-6xl font-bold text-surface-900 dark:text-surface-0 mb-6"
+        >
+          Transforme anotações de feira em <span class="text-primary">insights acionáveis</span>
+        </h1>
+        
+        <p 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000"
+          class="text-xl md:text-2xl text-surface-600 dark:text-surface-300 mb-8"
+        >
+          Análise rápida de vendas para pequenos produtores e ateliês. 
+          <strong>100% local</strong>, sem enviar seus dados para nenhum servidor.
+        </p>
+
+        <div 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 zoom-in-50 animate-duration-1000"
+          class="flex flex-col sm:flex-row gap-4 justify-center items-center"
+        >
+          <p-button 
+            label="Analisar Minhas Vendas" 
+            icon="pi pi-chart-line"
+            size="large"
+            (onClick)="irParaAnalisador()"
+            styleClass="w-full sm:w-auto"
+          />
+          <p-button 
+            label="Ver Como Funciona" 
+            icon="pi pi-info-circle"
+            [outlined]="true"
+            size="large"
+            styleClass="w-full sm:w-auto"
+            routerLink="/como-funciona"
+          />
+        </div>
+
+        <p class="mt-6 text-sm text-surface-500 dark:text-surface-400">
+          <i class="pi pi-lock mr-2"></i>
+          Seus dados ficam no seu dispositivo. Nenhuma informação é enviada para servidores externos.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problema → Solução -->
+  <section class="py-16 md:py-24 bg-surface-0 dark:bg-surface-900">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+          <!-- Problema -->
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000"
+            class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 md:p-8 border border-surface-200 dark:border-surface-700"
+          >
+            <div class="flex items-center gap-3 mb-4">
+              <i class="pi pi-exclamation-triangle text-3xl text-orange-500"></i>
+              <h3 class="text-2xl font-bold text-surface-900 dark:text-surface-0">O Problema</h3>
+            </div>
+            <ul class="space-y-3 text-surface-700 dark:text-surface-200">
+              <li class="flex items-start gap-2">
+                <i class="pi pi-times-circle text-red-500 mt-1"></i>
+                <span>Anotações em papel ou TXT sem organização</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="pi pi-times-circle text-red-500 mt-1"></i>
+                <span>Difícil saber quais produtos vendem mais</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="pi pi-times-circle text-red-500 mt-1"></i>
+                <span>Sem visão clara de faturamento e tendências</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="pi pi-times-circle text-red-500 mt-1"></i>
+                <span>Decisões de produção baseadas em "achismo"</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Solução -->
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 slide-in-from-r-8 animate-duration-1000"
+            class="bg-gradient-to-br from-primary/10 to-surface-0 dark:from-primary/5 dark:to-surface-800 rounded-xl p-6 md:p-8 border border-primary/20"
+          >
+            <div class="flex items-center gap-3 mb-4">
+              <i class="pi pi-check-circle text-3xl text-emerald-500"></i>
+              <h3 class="text-2xl font-bold text-surface-900 dark:text-surface-0">A Solução</h3>
+            </div>
+            <ul class="space-y-3 text-surface-700 dark:text-surface-200">
+              <li class="flex items-start gap-2">
+                <i class="pi pi-check text-emerald-500 mt-1"></i>
+                <span>Importa seus TXT e gera painel automático</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="pi pi-check text-emerald-500 mt-1"></i>
+                <span>Vê top produtos, categorias e tendências</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="pi pi-check text-emerald-500 mt-1"></i>
+                <span>Insights claros: "O que isso sugere"</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i class="pi pi-check text-emerald-500 mt-1"></i>
+                <span>Exporta CSV padronizado para controle</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Como Funciona -->
+  <section id="como-funciona" class="py-16 md:py-24 bg-surface-50 dark:bg-surface-950">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-6xl mx-auto">
+        <h2 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 animate-duration-1000"
+          class="text-3xl md:text-4xl font-bold text-center text-surface-900 dark:text-surface-0 mb-12"
+        >
+          Como Funciona (3 Passos Simples)
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <!-- Passo 1 -->
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000"
+            class="bg-surface-0 dark:bg-surface-900 rounded-xl p-6 border border-surface-200 dark:border-surface-700 text-center"
+          >
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-3xl font-bold text-primary">1</span>
+            </div>
+            <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0 mb-3">
+              Envie seus TXT
+            </h3>
+            <p class="text-surface-600 dark:text-surface-300">
+              Arraste seus arquivos de anotações de feira ou selecione do computador. 
+              Aceita múltiplos arquivos.
+            </p>
+          </div>
+
+          <!-- Passo 2 -->
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 animate-duration-1000"
+            class="bg-surface-0 dark:bg-surface-900 rounded-xl p-6 border border-surface-200 dark:border-surface-700 text-center"
+          >
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-3xl font-bold text-primary">2</span>
+            </div>
+            <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0 mb-3">
+              Processamento Automático
+            </h3>
+            <p class="text-surface-600 dark:text-surface-300">
+              O sistema lê, categoriza e organiza suas vendas automaticamente. 
+              Tudo no seu navegador.
+            </p>
+          </div>
+
+          <!-- Passo 3 -->
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 slide-in-from-r-8 animate-duration-1000"
+            class="bg-surface-0 dark:bg-surface-900 rounded-xl p-6 border border-surface-200 dark:border-surface-700 text-center"
+          >
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-3xl font-bold text-primary">3</span>
+            </div>
+            <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0 mb-3">
+              Veja Insights e Exporte
+            </h3>
+            <p class="text-surface-600 dark:text-surface-300">
+              Painel com KPIs, gráficos e sugestões. 
+              Exporte CSV padronizado quando quiser.
+            </p>
+          </div>
+        </div>
+
+        <div class="text-center mt-12">
+          <p-button 
+            label="Começar Agora" 
+            icon="pi pi-arrow-right"
+            size="large"
+            (onClick)="irParaAnalisador()"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacidade -->
+  <section class="py-16 md:py-24 bg-surface-0 dark:bg-surface-900">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-4xl mx-auto">
+        <div 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 zoom-in-50 animate-duration-1000"
+          class="bg-gradient-to-br from-emerald-500/10 to-surface-0 dark:from-emerald-500/5 dark:to-surface-800 rounded-xl p-8 md:p-12 border border-emerald-500/20 text-center"
+        >
+          <i class="pi pi-shield text-5xl text-emerald-500 mb-4"></i>
+          <h2 class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-4">
+            100% Local e Privado
+          </h2>
+          <p class="text-lg text-surface-700 dark:text-surface-200 mb-6">
+            Seus dados de vendas <strong>nunca saem do seu dispositivo</strong>. 
+            Todo o processamento acontece no seu navegador. 
+            Você decide se quer salvar localmente ou usar sessão privada.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center text-left">
+            <div class="flex items-start gap-2">
+              <i class="pi pi-check-circle text-emerald-500 mt-1"></i>
+              <span class="text-surface-700 dark:text-surface-200">Sem servidores externos</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <i class="pi pi-check-circle text-emerald-500 mt-1"></i>
+              <span class="text-surface-700 dark:text-surface-200">Sem rastreamento</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <i class="pi pi-check-circle text-emerald-500 mt-1"></i>
+              <span class="text-surface-700 dark:text-surface-200">Apague tudo quando quiser</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 md:py-24 bg-surface-50 dark:bg-surface-950">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 animate-duration-1000"
+          class="text-3xl md:text-4xl font-bold text-center text-surface-900 dark:text-surface-0 mb-12"
+        >
+          Perguntas Frequentes
+        </h2>
+
+        <div class="space-y-4">
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000"
+            class="bg-surface-0 dark:bg-surface-900 rounded-lg p-6 border border-surface-200 dark:border-surface-700"
+          >
+            <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 mb-2">
+              Que formato de arquivo aceita?
+            </h3>
+            <p class="text-surface-600 dark:text-surface-300">
+              Aceita arquivos TXT com suas anotações de feira no formato simples (data + produtos + valores). 
+              Também aceita CSV gerado pelo próprio sistema para reimportar.
+            </p>
+          </div>
+
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 slide-in-from-r-8 animate-duration-1000"
+            class="bg-surface-0 dark:bg-surface-900 rounded-lg p-6 border border-surface-200 dark:border-surface-700"
+          >
+            <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 mb-2">
+              Quantos arquivos posso enviar?
+            </h3>
+            <p class="text-surface-600 dark:text-surface-300">
+              Pode enviar múltiplos arquivos de uma vez (ex: 4 feiras do mês). 
+              O sistema consolida tudo em um único painel.
+            </p>
+          </div>
+
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000"
+            class="bg-surface-0 dark:bg-surface-900 rounded-lg p-6 border border-surface-200 dark:border-surface-700"
+          >
+            <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 mb-2">
+              Meus dados ficam salvos?
+            </h3>
+            <p class="text-surface-600 dark:text-surface-300">
+              Por padrão, não. Você usa em "sessão privada" e pode apagar tudo ao fechar. 
+              Se quiser, pode optar por salvar localmente no seu navegador para reabrir depois.
+            </p>
+          </div>
+
+          <div 
+            pAnimateOnScroll 
+            enterClass="animate-enter fade-in-10 slide-in-from-r-8 animate-duration-1000"
+            class="bg-surface-0 dark:bg-surface-900 rounded-lg p-6 border border-surface-200 dark:border-surface-700"
+          >
+            <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 mb-2">
+              Funciona offline?
+            </h3>
+            <p class="text-surface-600 dark:text-surface-300">
+              Após carregar a página uma vez, funciona offline. 
+              Todo o processamento é local, não precisa de internet.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Final -->
+  <section class="py-16 md:py-24 bg-gradient-to-br from-primary/10 to-surface-0 dark:from-primary/5 dark:to-surface-900">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 zoom-in-50 animate-duration-1000"
+          class="text-3xl md:text-4xl font-bold text-surface-900 dark:text-surface-0 mb-6"
+        >
+          Pronto para ter clareza nas suas vendas?
+        </h2>
+        <p class="text-xl text-surface-600 dark:text-surface-300 mb-8">
+          Comece agora. Leva menos de 2 minutos.
+        </p>
+        <p-button 
+          label="Analisar Minhas Vendas" 
+          icon="pi pi-chart-line"
+          size="large"
+          (onClick)="irParaAnalisador()"
+        />
+      </div>
+    </div>
+  </section>
+</div>

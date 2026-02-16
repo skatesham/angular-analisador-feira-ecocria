@@ -1,0 +1,88 @@
+<div class="flex items-center gap-2">
+  <!-- Language Selector -->
+  <p-select
+    [options]="locales"
+    [ngModel]="currentLocale()"
+    optionLabel="flag"
+    optionValue="code"
+    (onChange)="onLocaleChange($event.value)"
+    styleClass="w-18"
+  />
+
+  <!-- Dark/Light Toggle -->
+  <button
+    type="button"
+    class="inline-flex w-9 h-9 p-0 items-center justify-center bg-surface-0 dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors"
+    (click)="onThemeToggle()">
+    <i [class]="'pi ' + iconClass()" class="text-surface-700 dark:text-surface-200"></i>
+  </button>
+
+  <!-- Palette Button -->
+  <div class="relative">
+    <button
+      pStyleClass="@next"
+      enterFromClass="hidden"
+      enterActiveClass="animate-scalein"
+      leaveToClass="hidden"
+      leaveActiveClass="animate-fadeout"
+      [hideOnOutsideClick]="true"
+      type="button"
+      class="inline-flex w-9 h-9 p-0 items-center justify-center bg-surface-0 dark:bg-surface-800 border border-surface-200 dark:border-surface-600 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors">
+      <i class="pi pi-palette text-surface-700 dark:text-surface-200"></i>
+    </button>
+
+    <!-- Palette Panel -->
+    <div class="absolute top-11 -right-16 sm:right-0 hidden w-80 max-w-[calc(100vw-2rem)] p-4 bg-surface-0 dark:bg-surface-900 rounded-xl shadow-xl border border-surface-200 dark:border-surface-700 flex-col gap-4 origin-top z-50">
+
+      <!-- Primary Colors -->
+      <div class="flex flex-col gap-2">
+        <span class="text-sm font-semibold text-surface-700 dark:text-surface-200">Primary</span>
+        <div class="flex flex-wrap gap-2">
+          @for (color of primaryColors(); track color.name) {
+            <button
+              type="button"
+              [title]="color.name"
+              (click)="onPrimaryChange($event, color)"
+              class="w-6 h-6 rounded-full cursor-pointer transition-all hover:scale-110"
+              [style.background-color]="color.name === 'noir' ? 'var(--p-text-color)' : color.palette['500']"
+              [style.outline]="selectedPrimary() === color.name ? '2px solid var(--p-primary-color)' : 'none'"
+              [style.outline-offset]="'2px'">
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Surface Colors -->
+      <div class="flex flex-col gap-2 mt-3">
+        <span class="text-sm font-semibold text-surface-700 dark:text-surface-200">Surface</span>
+        <div class="flex flex-wrap gap-2">
+          @for (surface of surfaces; track surface.name) {
+            <button
+              type="button"
+              [title]="surface.name"
+              (click)="onSurfaceChange($event, surface)"
+              class="w-6 h-6 rounded-full cursor-pointer transition-all hover:scale-110"
+              [style.background-color]="surface.palette['500']"
+              [style.outline]="selectedSurface() === surface.name ? '2px solid var(--p-primary-color)' : 'none'"
+              [style.outline-offset]="'2px'">
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- DEV ONLY: Preset Selector -->
+      @if (!isProduction) {
+        <div class="flex flex-col gap-2 mt-3 pt-3 border-t border-surface-200 dark:border-surface-700">
+          <span class="text-sm font-semibold text-surface-700 dark:text-surface-200">Preset</span>
+          <p-selectbutton
+            [options]="presets"
+            [ngModel]="selectedPreset()"
+            (ngModelChange)="onPresetChange($event)"
+            [unselectable]="false"
+            size="small"
+            styleClass="w-full flex-wrap" />
+        </div>
+      }
+    </div>
+  </div>
+</div>

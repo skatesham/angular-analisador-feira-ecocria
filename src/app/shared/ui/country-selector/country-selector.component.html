@@ -1,0 +1,8 @@
+<p-select
+  [options]="locales"
+  [(ngModel)]="selectedLocale"
+  optionLabel="flag"
+  optionValue="code"
+  [style]="{ 'min-width': '4rem' }"
+  (onChange)="onLocaleChange($event.value)"
+/>
