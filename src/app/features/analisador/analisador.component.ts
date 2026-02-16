@@ -8,6 +8,9 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { FileParserService } from '../../core/services/file-parser.service';
 import { DataPipelineService } from '../../core/services/data-pipeline.service';
 import { AnalyticsService } from '../../core/services/analytics.service';
@@ -26,8 +29,11 @@ type EtapaProcessamento = 'upload' | 'lendo' | 'interpretando' | 'padronizando' 
     ProgressBarModule,
     MessageModule,
     TableModule,
-    TagModule
+    TagModule,
+    ConfirmDialogModule,
+    ToastModule
   ],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './analisador.component.html',
   styleUrl: './analisador.component.css'
 })
@@ -36,6 +42,8 @@ export class AnalisadorComponent implements OnInit {
   private dataPipeline = inject(DataPipelineService);
   private analytics = inject(AnalyticsService);
   private storageService = inject(StorageService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
   private router = inject(Router);
 
   arquivos = signal<File[]>([]);
@@ -77,23 +85,44 @@ export class AnalisadorComponent implements OnInit {
       }
     } catch (error) {
       console.error('Erro ao carregar análise:', error);
-      alert('Erro ao carregar análise. Tente novamente.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao carregar análise. Tente novamente.',
+        life: 5000
+      });
     }
   }
 
-  async excluirAnalise(id: string): Promise<void> {
-    if (!confirm('Tem certeza que deseja excluir esta análise?')) {
-      return;
-    }
-
-    try {
-      await this.storageService.apagarAnalise(id);
-      await this.carregarHistorico();
-      alert('Análise excluída com sucesso!');
-    } catch (error) {
-      console.error('Erro ao excluir análise:', error);
-      alert('Erro ao excluir análise. Tente novamente.');
-    }
+  excluirAnalise(id: string): void {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja excluir esta análise?',
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim, excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: async () => {
+        try {
+          await this.storageService.apagarAnalise(id);
+          await this.carregarHistorico();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Análise excluída com sucesso!',
+            life: 3000
+          });
+        } catch (error) {
+          console.error('Erro ao excluir análise:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao excluir análise. Tente novamente.',
+            life: 5000
+          });
+        }
+      }
+    });
   }
 
   async onFileSelect(event: any): Promise<void> {

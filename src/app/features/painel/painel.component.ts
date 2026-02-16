@@ -10,6 +10,9 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AnimateOnScrollModule } from 'primeng/animateonscroll';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import { BarChart, LineChart, PieChart } from 'echarts/charts';
@@ -46,9 +49,15 @@ echarts.use([
     SelectModule,
     InputTextModule,
     AnimateOnScrollModule,
-    NgxEchartsDirective
+    NgxEchartsDirective,
+    ConfirmDialogModule,
+    ToastModule
   ],
-  providers: [provideEchartsCore({ echarts })],
+  providers: [
+    provideEchartsCore({ echarts }),
+    ConfirmationService,
+    MessageService
+  ],
   templateUrl: './painel.component.html',
   styleUrl: './painel.component.css'
 })
@@ -56,6 +65,8 @@ export class PainelComponent implements OnInit {
   private analytics = inject(AnalyticsService);
   private exportService = inject(ExportService);
   private storageService = inject(StorageService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
   private router = inject(Router);
 
   filtroTempo = signal<FiltroTempoTipo>('tudo');
@@ -241,25 +252,51 @@ export class PainelComponent implements OnInit {
 
     try {
       await this.storageService.salvarAnalise(nome, resultado);
-      alert('Análise salva com sucesso!');
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: 'Análise salva com sucesso!',
+        life: 3000
+      });
     } catch (error) {
       console.error('Erro ao salvar análise:', error);
-      alert('Erro ao salvar análise. Tente novamente.');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao salvar análise. Tente novamente.',
+        life: 5000
+      });
     }
   }
 
-  async excluirHistorico(): Promise<void> {
-    if (!confirm('Tem certeza que deseja excluir TODAS as análises salvas? Esta ação não pode ser desfeita.')) {
-      return;
-    }
-
-    try {
-      await this.storageService.apagarTudo();
-      alert('Histórico excluído com sucesso!');
-    } catch (error) {
-      console.error('Erro ao excluir histórico:', error);
-      alert('Erro ao excluir histórico. Tente novamente.');
-    }
+  excluirHistorico(): void {
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja excluir TODAS as análises salvas? Esta ação não pode ser desfeita.',
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim, excluir tudo',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: async () => {
+        try {
+          await this.storageService.apagarTudo();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Histórico excluído com sucesso!',
+            life: 3000
+          });
+        } catch (error) {
+          console.error('Erro ao excluir histórico:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao excluir histórico. Tente novamente.',
+            life: 5000
+          });
+        }
+      }
+    });
   }
 
   exportarCsvCompleto(): void {
