@@ -10,7 +10,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AnimateOnScrollModule } from 'primeng/animateonscroll';
-import { NgxEchartsModule } from 'ngx-echarts';
+import { NgxEchartsDirective } from 'ngx-echarts';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { ExportService } from '../../core/services/export.service';
 import { FiltrosAnalise } from '../../core/models/analytics.model';
@@ -28,7 +28,7 @@ import { FiltrosAnalise } from '../../core/models/analytics.model';
     SelectModule,
     InputTextModule,
     AnimateOnScrollModule,
-    NgxEchartsModule
+    NgxEchartsDirective
   ],
   templateUrl: './painel.component.html',
   styleUrl: './painel.component.css'
