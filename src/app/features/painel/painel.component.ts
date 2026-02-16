@@ -17,6 +17,8 @@ import { GridComponent, TooltipComponent, LegendComponent, TitleComponent } from
 import { CanvasRenderer } from 'echarts/renderers';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { ExportService } from '../../core/services/export.service';
+import { StorageService } from '../../core/services/storage.service';
+import { AnalisesSalva, ResultadoProcessamento } from '../../core/models/processamento.model';
 import { FiltrosAnalise, FiltroTempoTipo } from '../../core/models/analytics.model';
 
 // Registrar componentes do ECharts
@@ -53,6 +55,7 @@ echarts.use([
 export class PainelComponent implements OnInit {
   private analytics = inject(AnalyticsService);
   private exportService = inject(ExportService);
+  private storageService = inject(StorageService);
   private router = inject(Router);
 
   filtroTempo = signal<FiltroTempoTipo>('tudo');
@@ -213,9 +216,50 @@ export class PainelComponent implements OnInit {
     this.router.navigate(['/analisar']);
   }
 
-  salvarAnalise(): void {
-    // TODO: Implementar salvamento no IndexedDB
-    console.log('Salvar análise - a implementar');
+  async salvarAnalise(): Promise<void> {
+    const vendas = this.vendas();
+    
+    const resultado: ResultadoProcessamento = {
+      vendas: vendas,
+      estatisticas: {
+        totalArquivos: 1,
+        totalLinhas: vendas.length,
+        linhasProcessadas: vendas.length,
+        linhasDescartadas: 0,
+        linhasCorrigidas: 0,
+        vendasGeradas: vendas.length,
+        itensProcessados: vendas.reduce((sum, v) => sum + v.itens.length, 0),
+        erros: [],
+        warnings: []
+      },
+      logs: [],
+      timestamp: new Date(),
+      versaoApp: '1.0.0'
+    };
+
+    const nome = `Análise ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+
+    try {
+      await this.storageService.salvarAnalise(nome, resultado);
+      alert('Análise salva com sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar análise:', error);
+      alert('Erro ao salvar análise. Tente novamente.');
+    }
+  }
+
+  async excluirHistorico(): Promise<void> {
+    if (!confirm('Tem certeza que deseja excluir TODAS as análises salvas? Esta ação não pode ser desfeita.')) {
+      return;
+    }
+
+    try {
+      await this.storageService.apagarTudo();
+      alert('Histórico excluído com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir histórico:', error);
+      alert('Erro ao excluir histórico. Tente novamente.');
+    }
   }
 
   exportarCsvCompleto(): void {

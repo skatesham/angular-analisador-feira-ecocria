@@ -24,6 +24,13 @@
           (onClick)="salvarAnalise()"
         />
         <p-button 
+          label="Excluir Histórico" 
+          icon="pi pi-trash"
+          [outlined]="true"
+          severity="danger"
+          (onClick)="excluirHistorico()"
+        />
+        <p-button 
           label="Exportar" 
           icon="pi pi-download"
           [outlined]="true"
