@@ -78,6 +78,8 @@ export class PainelComponent implements OnInit {
   graficoTopSubcategorias = computed(() => this.gerarGraficoSubcategorias());
   graficoEvolucao = computed(() => this.gerarGraficoEvolucaoPorData());
   graficoParticipacao = computed(() => this.gerarGraficoParticipacao());
+  
+  subcategoriasDetalhadas = computed(() => this.analytics.calcularTopSubcategorias(50));
 
   ngOnInit(): void {
     const vendas = this.analytics.vendasFiltradas();
