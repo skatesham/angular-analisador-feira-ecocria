@@ -20,13 +20,20 @@ export class ComoFuncionaComponent {
 
   dialogVisible = false;
 
-  // Dados reais do modelo de categorização
-  abreviaturas = Object.entries(PRODUCT_TYPES).map(([key, value]) => ({
+  // Tabela 1: Categorização de Tipo (PRODUCT_TYPES completo)
+  tiposCategorias = Object.entries(PRODUCT_TYPES).map(([key, value]) => ({
     abrev: key,
     tipo: value
   }));
 
-  categorias = (() => {
+  // Tabela 2: Categorização de Categoria (PRODUCT_CATEGORIES completo)
+  categoriasDetalhadas = Object.entries(PRODUCT_CATEGORIES).map(([key, value]) => ({
+    abrev: key,
+    categoria: value
+  }));
+
+  // Tabela 3: Tipos Agrupados com suas Categorias
+  tiposAgrupados = (() => {
     const tiposUnicos = new Map<string, Set<string>>();
     
     // Agrupar categorias por tipo

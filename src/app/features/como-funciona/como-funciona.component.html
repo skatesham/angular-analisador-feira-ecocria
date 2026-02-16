@@ -318,9 +318,11 @@
 <p-dialog 
   [(visible)]="dialogVisible" 
   [modal]="true" 
-  [style]="{ width: '90vw', maxWidth: '1200px' }"
+  [style]="{ width: '95vw', maxWidth: '1400px' }"
   [draggable]="false"
   [resizable]="false"
+  [closable]="false"
+  [showHeader]="false"
   styleClass="headless-confirm"
 >
   <div class="p-6">
@@ -336,17 +338,17 @@
       />
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Tabela de Abreviaturas -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Tabela de Categorização de Tipo (PRODUCT_TYPES) -->
       <div>
         <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-3">
-          Abreviaturas Reconhecidas ({{ abreviaturas.length }})
+          Categorização de Tipo ({{ tiposCategorias.length }})
         </h3>
         <div class="border border-surface-200 dark:border-surface-700 rounded-lg overflow-hidden">
           <p-table 
-            [value]="abreviaturas" 
+            [value]="tiposCategorias" 
             [scrollable]="true" 
-            scrollHeight="400px"
+            scrollHeight="500px"
             styleClass="p-datatable-sm"
           >
             <ng-template pTemplate="header">
@@ -369,16 +371,48 @@
         </div>
       </div>
 
-      <!-- Tabela de Tipos e Categorias -->
+      <!-- Tabela de Categorização de Categoria (PRODUCT_CATEGORIES) -->
       <div>
         <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-3">
-          Tipos e Categorias ({{ categorias.length }})
+          Categorização de Categoria ({{ categoriasDetalhadas.length }})
         </h3>
         <div class="border border-surface-200 dark:border-surface-700 rounded-lg overflow-hidden">
           <p-table 
-            [value]="categorias" 
+            [value]="categoriasDetalhadas" 
             [scrollable]="true" 
-            scrollHeight="400px"
+            scrollHeight="500px"
+            styleClass="p-datatable-sm"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Abreviatura</th>
+                <th>Categoria</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>
+                  <code class="bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded text-sm font-mono">
+                    {{ item.abrev }}
+                  </code>
+                </td>
+                <td>{{ item.categoria }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <!-- Tabela de Tipos Agrupados -->
+      <div>
+        <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-3">
+          Tipos e Categorias Agrupadas ({{ tiposAgrupados.length }})
+        </h3>
+        <div class="border border-surface-200 dark:border-surface-700 rounded-lg overflow-hidden">
+          <p-table 
+            [value]="tiposAgrupados" 
+            [scrollable]="true" 
+            scrollHeight="500px"
             styleClass="p-datatable-sm"
           >
             <ng-template pTemplate="header">
