@@ -53,20 +53,37 @@
               class="hidden"
             />
             
-            <button 
-              type="button"
-              (click)="fileInput.click()"
-              class="group relative px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-3 mx-auto border-2 border-primary/20"
-            >
-              <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
-                <i class="pi pi-cloud-upload text-2xl"></i>
-              </div>
-              <div class="flex flex-col items-start">
-                <span class="text-lg">Selecionar Arquivos</span>
-                <span class="text-xs font-normal opacity-90">TXT, CSV ou XLSX</span>
-              </div>
-              <i class="pi pi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-            </button>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <button 
+                type="button"
+                (click)="fileInput.click()"
+                class="group relative px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-3 border-2 border-primary/20"
+              >
+                <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <i class="pi pi-cloud-upload text-2xl"></i>
+                </div>
+                <div class="flex flex-col items-start">
+                  <span class="text-lg">Selecionar Arquivos</span>
+                  <span class="text-xs font-normal opacity-90">TXT, CSV ou XLSX</span>
+                </div>
+                <i class="pi pi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+              </button>
+              
+              <button 
+                type="button"
+                (click)="carregarDemo()"
+                class="group relative px-8 py-4 bg-gradient-to-r from-sky-500 to-sky-600 text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-3 border-2 border-sky-400/20"
+              >
+                <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <i class="pi pi-sparkles text-2xl"></i>
+                </div>
+                <div class="flex flex-col items-start">
+                  <span class="text-lg">Ver Demo</span>
+                  <span class="text-xs font-normal opacity-90">Dados de exemplo</span>
+                </div>
+                <i class="pi pi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+              </button>
+            </div>
             
             <p class="text-xs text-surface-500 dark:text-surface-400 mt-4">
               Máximo 10MB por arquivo • Processamento 100% local

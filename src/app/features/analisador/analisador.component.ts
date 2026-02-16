@@ -224,4 +224,31 @@ export class AnalisadorComponent implements OnInit {
   getSeveridade(tipo: 'erro' | 'warning'): 'error' | 'warn' {
     return tipo === 'erro' ? 'error' : 'warn';
   }
+
+  async carregarDemo(): Promise<void> {
+    try {
+      // Buscar arquivo demo do public
+      const response = await fetch('/demo-data/Feira 30.08.25.txt');
+      if (!response.ok) {
+        throw new Error('Erro ao carregar arquivo demo');
+      }
+      
+      const conteudo = await response.text();
+      
+      // Criar um File object a partir do conteúdo
+      const blob = new Blob([conteudo], { type: 'text/plain' });
+      const file = new File([blob], 'Feira 30.08.25.txt', { type: 'text/plain' });
+      
+      // Processar como se fosse um upload normal
+      await this.processFiles([file]);
+    } catch (error) {
+      console.error('Erro ao carregar demo:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao carregar dados de demonstração. Tente novamente.',
+        life: 5000
+      });
+    }
+  }
 }
