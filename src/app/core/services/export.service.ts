@@ -51,7 +51,7 @@ export class ExportService {
     });
 
     const csv = linhas.join('\n');
-    const nomeArquivo = this.gerarNomeArquivo('vendas-feira', periodo);
+    const nomeArquivo = this.gerarNomeArquivo('feira', periodo);
     this.download(csv, nomeArquivo, 'text/csv');
   }
 

@@ -1,4 +1,4 @@
-<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-3 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700">
+<header [class]="'fixed left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-3 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700 transition-transform duration-300 ' + (navbarVisible() ? 'top-0' : '-top-20')">
   <a routerLink="/" class="flex items-center gap-2">
     <img src="logo.png" alt="Feira da Ecocria" class="h-10 w-10" />
     <span class="hidden md:inline text-xl font-bold text-surface-900 dark:text-surface-0">Feira da Ecocria</span>

@@ -17,6 +17,7 @@ import {
 export class AnalyticsService {
   private vendas = signal<Venda[]>([]);
   private filtros = signal<FiltrosAnalise>({});
+  private analiseCarregadaId = signal<string | null>(null);
 
   vendasFiltradas = computed(() => {
     const vendas = this.vendas();
@@ -63,6 +64,14 @@ export class AnalyticsService {
 
   setFiltros(filtros: FiltrosAnalise): void {
     this.filtros.set(filtros);
+  }
+  
+  setAnaliseCarregadaId(id: string | null): void {
+    this.analiseCarregadaId.set(id);
+  }
+  
+  getAnaliseCarregadaId(): string | null {
+    return this.analiseCarregadaId();
   }
 
   calcularKPIs(): KPI[] {

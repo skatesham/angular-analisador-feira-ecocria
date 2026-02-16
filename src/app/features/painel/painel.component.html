@@ -20,12 +20,22 @@
           [outlined]="true"
           (onClick)="voltarParaAnalisador()"
         />
-        <p-button 
-          label="Salvar" 
-          icon="pi pi-save"
-          [outlined]="true"
-          (onClick)="salvarAnalise()"
-        />
+        @if (analiseCarregadaId()) {
+          <p-button 
+            label="Excluir" 
+            icon="pi pi-trash"
+            [outlined]="true"
+            severity="danger"
+            (onClick)="excluirAnaliseAtual()"
+          />
+        } @else {
+          <p-button 
+            label="Salvar" 
+            icon="pi pi-save"
+            [outlined]="true"
+            (onClick)="salvarAnalise()"
+          />
+        }
         <p-button 
           label="Exportar" 
           icon="pi pi-download"
@@ -42,25 +52,41 @@
           <span class="text-sm font-semibold text-surface-700 dark:text-surface-200">Período:</span>
           <p-button 
             label="Última Semana" 
-            [outlined]="filtroTempo() !== 'ultima-semana'"
+            [outlined]="!(filtroTempo() === 'ultima-semana')"
             size="small"
             (onClick)="aplicarFiltroTempo('ultima-semana')"
           />
           <p-button 
             label="Último Mês" 
-            [outlined]="filtroTempo() !== 'ultimo-mes'"
+            [outlined]="!(filtroTempo() === 'ultimo-mes')"
             size="small"
             (onClick)="aplicarFiltroTempo('ultimo-mes')"
           />
           <p-button 
             label="Últimos 3 Meses" 
-            [outlined]="filtroTempo() !== 'ultimos-3-meses'"
+            [outlined]="!(filtroTempo() === 'ultimos-3-meses')"
             size="small"
             (onClick)="aplicarFiltroTempo('ultimos-3-meses')"
           />
+          @if (periodosDisponiveisStable().tem1Ano) {
+            <p-button 
+              label="1 Ano" 
+              [outlined]="!(filtroTempo() === '1-ano')"
+              size="small"
+              (onClick)="aplicarFiltroTempo('1-ano')"
+            />
+          }
+          @if (periodosDisponiveisStable().tem3Anos) {
+            <p-button 
+              label="3 Anos" 
+              [outlined]="!(filtroTempo() === '3-anos')"
+              size="small"
+              (onClick)="aplicarFiltroTempo('3-anos')"
+            />
+          }
           <p-button 
             label="Tudo" 
-            [outlined]="filtroTempo() !== 'tudo'"
+            [outlined]="!(filtroTempo() === 'tudo')"
             size="small"
             (onClick)="aplicarFiltroTempo('tudo')"
           />
@@ -141,18 +167,34 @@
     }
 
     <!-- Gráficos -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 gap-6 mb-8">
       <!-- Top Produtos -->
       <div 
         pAnimateOnScroll 
-        enterClass="animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000"
+        enterClass="animate-enter fade-in-10 slide-in-from-t-20 animate-duration-1000"
       >
         <p-card>
           <ng-template pTemplate="header">
-            <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+            <div class="p-4 border-b border-surface-200 dark:border-surface-700 flex justify-between items-center">
               <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
-                Top 5 Categorias
+                Top {{ isMobile() ? 5 : 10 }} Categorias
               </h3>
+              <div class="flex gap-2">
+                <p-button 
+                  icon="pi pi-chart-bar" 
+                  [outlined]="tipoGraficoTopItens() !== 'bar'"
+                  size="small"
+                  (onClick)="tipoGraficoTopItens.set('bar')"
+                  [pTooltip]="'Gráfico de Barras'"
+                />
+                <p-button 
+                  icon="pi pi-chart-pie" 
+                  [outlined]="tipoGraficoTopItens() !== 'pie'"
+                  size="small"
+                  (onClick)="tipoGraficoTopItens.set('pie')"
+                  [pTooltip]="'Gráfico de Pizza'"
+                />
+              </div>
             </div>
           </ng-template>
           <div echarts [options]="graficoTopCategorias()" [theme]="echartsTheme()" class="h-96"></div>
@@ -162,14 +204,30 @@
       <!-- Top Subcategorias -->
       <div 
         pAnimateOnScroll 
-        enterClass="animate-enter fade-in-10 slide-in-from-r-8 animate-duration-1000"
+        enterClass="animate-enter fade-in-10 slide-in-from-b-20 animate-duration-1000"
       >
         <p-card>
           <ng-template pTemplate="header">
-            <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+            <div class="p-4 border-b border-surface-200 dark:border-surface-700 flex justify-between items-center">
               <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
-                Top 10 Subcategorias
+                Top {{ isMobile() ? 5 : 10 }} Subcategorias
               </h3>
+              <div class="flex gap-2">
+                <p-button 
+                  icon="pi pi-chart-bar" 
+                  [outlined]="tipoGraficoSubcategorias() !== 'bar'"
+                  size="small"
+                  (onClick)="tipoGraficoSubcategorias.set('bar')"
+                  [pTooltip]="'Gráfico de Barras'"
+                />
+                <p-button 
+                  icon="pi pi-chart-pie" 
+                  [outlined]="tipoGraficoSubcategorias() !== 'pie'"
+                  size="small"
+                  (onClick)="tipoGraficoSubcategorias.set('pie')"
+                  [pTooltip]="'Gráfico de Pizza'"
+                />
+              </div>
             </div>
           </ng-template>
           <div echarts [options]="graficoTopSubcategorias()" [theme]="echartsTheme()" class="h-96"></div>

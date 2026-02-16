@@ -83,6 +83,7 @@ export class AnalisadorComponent implements OnInit {
       const analise = await this.storageService.carregarAnalise(id);
       if (analise) {
         this.analytics.setVendas(analise.resultado.vendas);
+        this.analytics.setAnaliseCarregadaId(id);
         this.router.navigate(['/painel']);
       }
     } catch (error) {
@@ -129,9 +130,23 @@ export class AnalisadorComponent implements OnInit {
     });
   }
 
+  onFileInputChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const filesArray = Array.from(input.files);
+      this.processFiles(filesArray);
+    }
+  }
+
   async onFileSelect(event: any): Promise<void> {
     const files: File[] = event.files || event.currentFiles || [];
     
+    if (files.length === 0) return;
+    
+    await this.processFiles(files);
+  }
+  
+  private async processFiles(files: File[]): Promise<void> {
     if (files.length === 0) return;
 
     this.arquivos.set(files);
@@ -169,6 +184,7 @@ export class AnalisadorComponent implements OnInit {
       await this.delay(500);
 
       this.analytics.setVendas(resultado.vendas);
+      this.analytics.setAnaliseCarregadaId(null);
       this.resultado.set(resultado);
 
       this.etapaAtual.set('concluido');

@@ -6,6 +6,13 @@
     <div class="max-w-5xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-8">
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <img src="logo.png" alt="Ecocria" class="h-16 w-16" />
+          <div class="flex flex-col items-start">
+            <span class="text-3xl font-bold text-surface-900 dark:text-surface-0">Ecocria</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">Home</span>
+          </div>
+        </div>
         <h1 class="text-3xl md:text-4xl font-bold text-surface-900 dark:text-surface-0 mb-3">
           Analisador de Vendas de Feira
         </h1>
@@ -26,29 +33,29 @@
               Arraste e solte ou clique no botão abaixo para selecionar arquivos TXT, CSV ou XLSX
             </p>
             
-            <p-fileUpload
-              name="files[]"
-              [multiple]="true"
+            <input 
+              #fileInput
+              type="file" 
+              multiple 
               accept=".txt,.csv,.xlsx"
-              [maxFileSize]="10000000"
-              [showUploadButton]="false"
-              [showCancelButton]="false"
-              (onSelect)="onFileSelect($event)"
-              [auto]="true"
-              chooseLabel="Selecionar Arquivos"
-              chooseIcon="pi pi-upload"
-              styleClass="inline-block"
+              (change)="onFileInputChange($event)"
+              class="hidden"
+            />
+            
+            <button 
+              type="button"
+              (click)="fileInput.click()"
+              class="group relative px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-3 mx-auto border-2 border-primary/20"
             >
-              <ng-template pTemplate="choose">
-                <button 
-                  type="button" 
-                  class="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2 mx-auto"
-                >
-                  <i class="pi pi-upload"></i>
-                  <span>Selecionar Arquivos</span>
-                </button>
-              </ng-template>
-            </p-fileUpload>
+              <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
+                <i class="pi pi-cloud-upload text-2xl"></i>
+              </div>
+              <div class="flex flex-col items-start">
+                <span class="text-lg">Selecionar Arquivos</span>
+                <span class="text-xs font-normal opacity-90">TXT, CSV ou XLSX</span>
+              </div>
+              <i class="pi pi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </button>
             
             <p class="text-xs text-surface-500 dark:text-surface-400 mt-4">
               Máximo 10MB por arquivo • Processamento 100% local
@@ -91,12 +98,13 @@
                   </div>
                   
                   <div class="flex gap-2">
+                    <!-- Mobile: icon only -->
                     <p-button 
-                      label="Carregar" 
                       icon="pi pi-folder-open"
                       [outlined]="true"
                       size="small"
                       (onClick)="carregarAnalise(analise.id)"
+                      class="md:hidden"
                     />
                     <p-button 
                       icon="pi pi-trash"
@@ -104,6 +112,26 @@
                       severity="danger"
                       size="small"
                       (onClick)="excluirAnalise(analise.id)"
+                      class="md:hidden"
+                    />
+                    
+                    <!-- Desktop: with labels -->
+                    <p-button 
+                      label="Carregar" 
+                      icon="pi pi-folder-open"
+                      [outlined]="true"
+                      size="small"
+                      (onClick)="carregarAnalise(analise.id)"
+                      class="hidden md:inline-flex"
+                    />
+                    <p-button 
+                      label="Excluir"
+                      icon="pi pi-trash"
+                      [outlined]="true"
+                      severity="danger"
+                      size="small"
+                      (onClick)="excluirAnalise(analise.id)"
+                      class="hidden md:inline-flex"
                     />
                   </div>
                 </div>

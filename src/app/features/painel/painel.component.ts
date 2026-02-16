@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AnimateOnScrollModule } from 'primeng/animateonscroll';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
@@ -51,7 +52,8 @@ echarts.use([
     AnimateOnScrollModule,
     NgxEchartsDirective,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    TooltipModule
   ],
   providers: [
     provideEchartsCore({ echarts }),
@@ -74,6 +76,19 @@ export class PainelComponent implements OnInit {
   dataFim = signal<Date | null>(null);
   categoriasSelecionadas = signal<string[]>([]);
   buscaTexto = signal<string>('');
+  
+  // Chart type toggles
+  tipoGraficoTopItens = signal<'bar' | 'pie'>('bar');
+  tipoGraficoSubcategorias = signal<'bar' | 'pie'>('bar');
+  
+  // Mobile detection
+  isMobile = signal<boolean>(false);
+  
+  // Track if loaded from histórico
+  analiseCarregadaId = computed(() => this.analytics.getAnaliseCarregadaId());
+  
+  // Stable periods availability (computed once on init)
+  periodosDisponiveisStable = signal({ tem1Ano: false, tem3Anos: false });
 
   // Filtros da tabela
   filtroTabelaDataInicio: Date | null = null;
@@ -103,6 +118,26 @@ export class PainelComponent implements OnInit {
   graficoTopSubcategorias = computed(() => this.gerarGraficoSubcategorias());
   graficoEvolucao = computed(() => this.gerarGraficoEvolucaoPorData());
   graficoParticipacao = computed(() => this.gerarGraficoParticipacao());
+  
+  // Computed for available period filters
+  periodosDisponiveis = computed(() => {
+    const vendas = this.analytics.vendasFiltradas();
+    if (vendas.length === 0) return { tem1Ano: false, tem3Anos: false };
+    
+    const hoje = new Date();
+    const umAnoAtras = new Date(hoje);
+    umAnoAtras.setFullYear(hoje.getFullYear() - 1);
+    const tresAnosAtras = new Date(hoje);
+    tresAnosAtras.setFullYear(hoje.getFullYear() - 3);
+    
+    const datasMaisAntigas = vendas.map(v => v.data.getTime());
+    const dataMaisAntiga = new Date(Math.min(...datasMaisAntigas));
+    
+    return {
+      tem1Ano: dataMaisAntiga <= umAnoAtras,
+      tem3Anos: dataMaisAntiga <= tresAnosAtras
+    };
+  });
   
   subcategoriasDetalhadas = computed(() => this.analytics.calcularTopSubcategorias(50));
 
@@ -162,7 +197,38 @@ export class PainelComponent implements OnInit {
       return;
     }
 
-    // Categorias já são calculadas no computed categoriasDisponiveis
+    // Calculate available periods once and store
+    this.calcularPeriodosDisponiveis();
+
+    // Detect mobile
+    this.checkMobile();
+    window.addEventListener('resize', () => this.checkMobile());
+  }
+  
+  private calcularPeriodosDisponiveis(): void {
+    const vendas = this.analytics.vendasFiltradas();
+    if (vendas.length === 0) {
+      this.periodosDisponiveisStable.set({ tem1Ano: false, tem3Anos: false });
+      return;
+    }
+    
+    const hoje = new Date();
+    const umAnoAtras = new Date(hoje);
+    umAnoAtras.setFullYear(hoje.getFullYear() - 1);
+    const tresAnosAtras = new Date(hoje);
+    tresAnosAtras.setFullYear(hoje.getFullYear() - 3);
+    
+    const datasMaisAntigas = vendas.map(v => v.data.getTime());
+    const dataMaisAntiga = new Date(Math.min(...datasMaisAntigas));
+    
+    this.periodosDisponiveisStable.set({
+      tem1Ano: dataMaisAntiga <= umAnoAtras,
+      tem3Anos: dataMaisAntiga <= tresAnosAtras
+    });
+  }
+  
+  private checkMobile(): void {
+    this.isMobile.set(window.innerWidth < 768);
   }
 
   aplicarFiltroTempo(tipo: FiltroTempoTipo): void {
@@ -183,6 +249,14 @@ export class PainelComponent implements OnInit {
       case 'ultimos-3-meses':
         dataInicio = new Date(hoje);
         dataInicio.setMonth(hoje.getMonth() - 3);
+        break;
+      case '1-ano':
+        dataInicio = new Date(hoje);
+        dataInicio.setFullYear(hoje.getFullYear() - 1);
+        break;
+      case '3-anos':
+        dataInicio = new Date(hoje);
+        dataInicio.setFullYear(hoje.getFullYear() - 3);
         break;
       case 'tudo':
         dataInicio = undefined;
@@ -225,6 +299,42 @@ export class PainelComponent implements OnInit {
 
   voltarParaAnalisador(): void {
     this.router.navigate(['/analisar']);
+  }
+
+  excluirAnaliseAtual(): void {
+    const analiseId = this.analiseCarregadaId();
+    if (!analiseId) return;
+    
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja excluir esta análise?',
+      header: 'Confirmar Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim, excluir',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: async () => {
+        try {
+          this.storageService.setSessaoPrivada(false);
+          await this.storageService.apagarAnalise(analiseId);
+          this.analytics.setAnaliseCarregadaId(null);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Análise excluída com sucesso!',
+            life: 3000
+          });
+          this.router.navigate(['/analisar']);
+        } catch (error) {
+          console.error('Erro ao excluir análise:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao excluir análise. Tente novamente.',
+            life: 5000
+          });
+        }
+      }
+    });
   }
 
   async salvarAnalise(): Promise<void> {
@@ -334,12 +444,55 @@ export class PainelComponent implements OnInit {
   }
 
   private gerarGraficoTopItens(): any {
-    const categorias = this.analytics.calcularTopCategorias(5);
-    const cores = ['#3b82f6', '#10b981', '#0ea5e9', '#8b5cf6', '#ec4899'];
+    const limite = this.isMobile() ? 5 : 10;
+    const categorias = this.analytics.calcularTopCategorias(limite);
+    const cores = ['#3b82f6', '#10b981', '#0ea5e9', '#8b5cf6', '#ec4899', '#f59e0b', '#14b8a6', '#6366f1', '#a855f7', '#d946ef'];
+    
+    if (this.tipoGraficoTopItens() === 'pie') {
+      return {
+        title: {
+          text: `Top ${limite} Categorias por Receita`,
+          left: 'center',
+          textStyle: { fontSize: 16, fontWeight: 'bold' }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: (params: any) => {
+            return `${params.name}<br/>Receita: R$ ${params.value.toFixed(2)}<br/>Participação: ${params.percent.toFixed(1)}%`;
+          }
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          top: 'middle'
+        },
+        series: [{
+          name: 'Receita',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          center: ['60%', '50%'],
+          data: categorias.map((c, i) => ({
+            value: c.receita,
+            name: c.nome,
+            itemStyle: { color: cores[i] }
+          })),
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          },
+          label: {
+            formatter: '{b}: R$ {c}'
+          }
+        }]
+      };
+    }
     
     return {
       title: {
-        text: 'Top 5 Categorias por Receita',
+        text: `Top ${limite} Categorias por Receita`,
         left: 'center',
         textStyle: { fontSize: 16, fontWeight: 'bold' }
       },
@@ -391,12 +544,55 @@ export class PainelComponent implements OnInit {
   }
 
   private gerarGraficoSubcategorias(): any {
-    const subcategorias = this.analytics.calcularTopSubcategorias(10);
+    const limite = this.isMobile() ? 5 : 10;
+    const subcategorias = this.analytics.calcularTopSubcategorias(limite);
     const cores = ['#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899'];
+    
+    if (this.tipoGraficoSubcategorias() === 'pie') {
+      return {
+        title: {
+          text: `Top ${limite} Subcategorias por Receita`,
+          left: 'center',
+          textStyle: { fontSize: 16, fontWeight: 'bold' }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: (params: any) => {
+            return `${params.name}<br/>Receita: R$ ${params.value.toFixed(2)}<br/>Participação: ${params.percent.toFixed(1)}%`;
+          }
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          top: 'middle'
+        },
+        series: [{
+          name: 'Receita',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          center: ['60%', '50%'],
+          data: subcategorias.map((s, i) => ({
+            value: s.receita,
+            name: s.nome,
+            itemStyle: { color: cores[i] }
+          })),
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          },
+          label: {
+            formatter: '{b}: R$ {c}'
+          }
+        }]
+      };
+    }
     
     return {
       title: {
-        text: 'Top 10 Subcategorias por Receita',
+        text: `Top ${limite} Subcategorias por Receita`,
         left: 'center',
         textStyle: { fontSize: 16, fontWeight: 'bold' }
       },
