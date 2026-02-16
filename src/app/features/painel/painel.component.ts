@@ -81,6 +81,12 @@ export class PainelComponent implements OnInit {
   
   subcategoriasDetalhadas = computed(() => this.analytics.calcularTopSubcategorias(50));
 
+  echartsTheme = computed(() => {
+    // Detectar se está em dark mode
+    const isDark = document.documentElement.classList.contains('dark');
+    return isDark ? 'dark' : 'light';
+  });
+
   ngOnInit(): void {
     const vendas = this.analytics.vendasFiltradas();
     

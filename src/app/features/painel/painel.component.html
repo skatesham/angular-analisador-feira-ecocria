@@ -140,7 +140,7 @@
               </h3>
             </div>
           </ng-template>
-          <div echarts [options]="graficoTopCategorias()" class="h-96"></div>
+          <div echarts [options]="graficoTopCategorias()" [theme]="echartsTheme()" class="h-96"></div>
         </p-card>
       </div>
 
@@ -157,7 +157,7 @@
               </h3>
             </div>
           </ng-template>
-          <div echarts [options]="graficoTopSubcategorias()" class="h-96"></div>
+          <div echarts [options]="graficoTopSubcategorias()" [theme]="echartsTheme()" class="h-96"></div>
         </p-card>
       </div>
     </div>
@@ -176,7 +176,7 @@
             </h3>
           </div>
         </ng-template>
-        <div echarts [options]="graficoEvolucao()" class="h-96"></div>
+        <div echarts [options]="graficoEvolucao()" [theme]="echartsTheme()" class="h-96"></div>
       </p-card>
     </div>
 
