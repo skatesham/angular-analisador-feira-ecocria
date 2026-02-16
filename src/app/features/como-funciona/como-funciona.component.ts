@@ -4,10 +4,11 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { AnimateOnScrollModule } from 'primeng/animateonscroll';
 import { TabsModule } from 'primeng/tabs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-como-funciona',
-  imports: [CardModule, ButtonModule, AnimateOnScrollModule, TabsModule],
+  imports: [CardModule, ButtonModule, AnimateOnScrollModule, TabsModule, TranslateModule],
   templateUrl: './como-funciona.component.html',
   styleUrl: './como-funciona.component.css'
 })

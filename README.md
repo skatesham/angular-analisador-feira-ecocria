@@ -1,16 +1,76 @@
-# Analisador de Vendas de Feira
+# 📊 Analisador de Vendas de Feira
 
-Sistema web local para análise de vendas de feira. Transforme anotações rápidas em TXT em insights acionáveis com KPIs, gráficos e exports padronizados.
+> Sistema web local para análise de vendas de feira. Transforme anotações rápidas em TXT em insights acionáveis com KPIs, gráficos e exports padronizados.
 
-## Stack
+[![Deploy](https://github.com/skatesham/angular-analisador-feira-ecocria/actions/workflows/deploy.yml/badge.svg)](https://github.com/skatesham/angular-analisador-feira-ecocria/actions/workflows/deploy.yml)
+[![Angular](https://img.shields.io/badge/Angular-20-red)](https://angular.dev)
+[![PrimeNG](https://img.shields.io/badge/PrimeNG-20-blue)](https://primeng.org)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+## 🚀 Demo
+
+**[Ver Demo ao Vivo](https://skatesham.github.io/angular-analisador-feira-ecocria/)**
+
+---
+
+## 📋 Sobre o Projeto
+
+Sistema desenvolvido para **pequenos produtores e ateliês** que vendem em feiras. Permite transformar anotações simples em TXT em análises completas com:
+
+- ✅ **KPIs automáticos** (faturamento, ticket médio, itens vendidos)
+- ✅ **Gráficos interativos** (ECharts)
+- ✅ **Insights determinísticos** ("O que isso sugere")
+- ✅ **Categorização automática** de produtos
+- ✅ **Export CSV padronizado**
+- ✅ **100% local** - dados não saem do dispositivo
+- ✅ **Dark mode** completo
+- ✅ **i18n** (pt-BR e English)
+
+---
+
+## 🎯 Funcionalidades
+
+### 📥 **Importação Inteligente**
+- Upload múltiplo de arquivos TXT
+- Drag & drop
+- Suporte a CSV e XLSX (reimport)
+- Preview antes de processar
+
+### 🔄 **Processamento Automático**
+- Parse de datas em múltiplos formatos
+- Categorização de 40+ tipos de produtos
+- Consolidação de múltiplos arquivos
+- Deduplicação automática
+- Relatório de erros e warnings
+
+### 📊 **Painel de Analytics**
+- 4 KPIs principais
+- 3 gráficos interativos (ECharts)
+- Tabela com paginação
+- Filtros por período e categoria
+- Seção "O que isso sugere" com insights
+
+### 💾 **Export e Privacidade**
+- CSV final padronizado (formato brasileiro)
+- Resumos por item e categoria
+- Sessão privada por padrão
+- Opção de salvar localmente (IndexedDB)
+- Botão "Apagar todos os dados"
+
+---
+
+## 🛠️ Stack Tecnológica
 
 | Tecnologia | Versão | Uso |
 |---|---|---|
-| Angular | 20 | Framework principal |
-| PrimeNG | 20.4.0 | Componentes UI |
-| @primeuix/themes | latest | Tema Aura (light/dark) |
-| Tailwind CSS | v4 | Estilização utility-first |
-| tailwindcss-primeui | latest | Integração Tailwind ↔ PrimeNG |
+| **Angular** | 20 | Framework principal |
+| **PrimeNG** | 20.4.0 | Componentes UI |
+| **Tailwind CSS** | v4 | Estilização utility-first |
+| **ngx-echarts** | 20.0.2 | Gráficos interativos |
+| **ngx-translate** | 17.0.0 | Internacionalização |
+| **papaparse** | 5.5.3 | Parse de CSV |
+| **xlsx** | 0.18.5 | Parse de Excel |
+| **uuid** | 13.0.0 | Geração de IDs |
 | @ngx-translate | v17 | Internacionalização (i18n) |
 | ECharts + ngx-echarts | 6 / 20 | Gráficos |
 | uuid | v4 | Geração de IDs |
