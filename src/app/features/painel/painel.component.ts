@@ -10,10 +10,26 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AnimateOnScrollModule } from 'primeng/animateonscroll';
-import { NgxEchartsDirective } from 'ngx-echarts';
+import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
+import * as echarts from 'echarts/core';
+import { BarChart, LineChart, PieChart } from 'echarts/charts';
+import { GridComponent, TooltipComponent, LegendComponent, TitleComponent } from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { ExportService } from '../../core/services/export.service';
 import { FiltrosAnalise } from '../../core/models/analytics.model';
+
+// Registrar componentes do ECharts
+echarts.use([
+  BarChart,
+  LineChart,
+  PieChart,
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+  TitleComponent,
+  CanvasRenderer
+]);
 
 @Component({
   selector: 'app-painel',
@@ -30,6 +46,7 @@ import { FiltrosAnalise } from '../../core/models/analytics.model';
     AnimateOnScrollModule,
     NgxEchartsDirective
   ],
+  providers: [provideEchartsCore({ echarts })],
   templateUrl: './painel.component.html',
   styleUrl: './painel.component.css'
 })
