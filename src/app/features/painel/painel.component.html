@@ -7,10 +7,22 @@
           Análise de Vendas - Feira da Ecocria
         </h1>
         <p class="text-surface-600 dark:text-surface-300">
-          {{ vendas().length }} venda(s) • {{ totalItens() }} itens vendidos
+          {{ totalFeiras() }} feira(s) • {{ totalItens() }} itens vendidos
         </p>
       </div>
       <div class="flex gap-2">
+        <p-button 
+          label="Voltar" 
+          icon="pi pi-arrow-left"
+          [outlined]="true"
+          (onClick)="voltarParaAnalisador()"
+        />
+        <p-button 
+          label="Salvar" 
+          icon="pi pi-save"
+          [outlined]="true"
+          (onClick)="salvarAnalise()"
+        />
         <p-button 
           label="Exportar" 
           icon="pi pi-download"
@@ -216,9 +228,9 @@
           <ng-template pTemplate="body" let-sub>
             <tr>
               <td>
-                <p-tag [value]="sub.categoria" [severity]="'info'" />
+                <p-tag [value]="sub.categoria || '-'" [severity]="'info'" />
               </td>
-              <td>{{ sub.nome }}</td>
+              <td>{{ sub.nome || '-' }}</td>
               <td class="text-right">{{ sub.quantidade }}</td>
               <td class="text-right">R$ {{ sub.receita | number:'1.2-2' }}</td>
               <td class="text-right">{{ sub.participacao | number:'1.1-1' }}%</td>

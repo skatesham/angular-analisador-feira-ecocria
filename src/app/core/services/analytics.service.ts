@@ -239,60 +239,97 @@ export class AnalyticsService {
     
     if (vendas.length === 0) return insights;
 
-    const itens = this.calcularItensVendidos();
-    const categorias = this.calcularCategorias();
+    const categorias = this.calcularTopCategorias(5);
+    const subcategorias = this.calcularTopSubcategorias(10);
+    const evolucao = this.calcularEvolucaoPorData();
 
-    if (itens.length > 0 && itens[0].participacao > 40) {
+    // Insight 1: Categoria campeã
+    if (categorias.length > 0 && categorias[0].participacao > 30) {
       insights.push({
-        tipo: 'alerta',
-        titulo: 'Concentração alta em um item',
-        descricao: `O item "${itens[0].nome}" representa ${itens[0].participacao.toFixed(1)}% da receita`,
-        metrica: 'participacao_item',
-        valor: itens[0].participacao,
-        explicacao: 'Alta dependência de um único produto pode ser arriscado',
+        tipo: 'oportunidade',
+        titulo: `${categorias[0].nome} é sua categoria campeã`,
+        descricao: `Representa ${categorias[0].participacao.toFixed(1)}% da receita total (R$ ${categorias[0].receita.toFixed(2)})`,
+        metrica: 'categoria_campea',
+        valor: categorias[0].participacao,
+        explicacao: 'Mantenha variedade e estoque adequado nesta categoria',
         prioridade: 'alta'
       });
     }
 
+    // Insight 2: Subcategoria em destaque
+    if (subcategorias.length > 0) {
+      const topSub = subcategorias[0];
+      insights.push({
+        tipo: 'oportunidade',
+        titulo: `${topSub.nome} lidera as subcategorias`,
+        descricao: `${topSub.quantidade} unidades vendidas, gerando R$ ${topSub.receita.toFixed(2)}`,
+        metrica: 'subcategoria_top',
+        valor: topSub.receita,
+        explicacao: 'Considere aumentar produção ou criar variações',
+        prioridade: 'alta'
+      });
+    }
+
+    // Insight 3: Concentração excessiva
     if (categorias.length > 0 && categorias[0].participacao > 50) {
       insights.push({
         tipo: 'alerta',
         titulo: 'Concentração alta em uma categoria',
-        descricao: `A categoria "${categorias[0].nome}" representa ${categorias[0].participacao.toFixed(1)}% da receita`,
-        metrica: 'participacao_categoria',
+        descricao: `${categorias[0].nome} representa mais de 50% da receita`,
+        metrica: 'concentracao_categoria',
         valor: categorias[0].participacao,
-        explicacao: 'Considere diversificar o portfólio de produtos',
+        explicacao: 'Risco: dependência excessiva. Diversifique o portfólio',
         prioridade: 'media'
       });
     }
 
-    const itensRaros = itens.filter(i => i.frequencia <= 2);
-    if (itensRaros.length > 0) {
-      insights.push({
-        tipo: 'info',
-        titulo: 'Itens com baixa recorrência',
-        descricao: `${itensRaros.length} item(ns) vendido(s) apenas 1-2 vezes`,
-        metrica: 'itens_raros',
-        valor: itensRaros.length,
-        explicacao: 'Avalie se vale manter esses itens no catálogo',
-        prioridade: 'baixa'
-      });
+    // Insight 4: Tendência de crescimento
+    if (evolucao.length >= 3) {
+      const ultimas3 = evolucao.slice(-3);
+      const primeiraReceita = ultimas3[0].receita;
+      const ultimaReceita = ultimas3[ultimas3.length - 1].receita;
+      const crescimento = ((ultimaReceita - primeiraReceita) / primeiraReceita) * 100;
+      
+      if (crescimento > 10) {
+        insights.push({
+          tipo: 'oportunidade',
+          titulo: 'Vendas em crescimento',
+          descricao: `Crescimento de ${crescimento.toFixed(1)}% nas últimas ${ultimas3.length} feiras`,
+          metrica: 'crescimento',
+          valor: crescimento,
+          explicacao: 'Tendência positiva. Mantenha o ritmo de produção',
+          prioridade: 'alta'
+        });
+      } else if (crescimento < -10) {
+        insights.push({
+          tipo: 'alerta',
+          titulo: 'Queda nas vendas',
+          descricao: `Redução de ${Math.abs(crescimento).toFixed(1)}% nas últimas ${ultimas3.length} feiras`,
+          metrica: 'queda',
+          valor: crescimento,
+          explicacao: 'Revise estratégia de produtos e precificação',
+          prioridade: 'alta'
+        });
+      }
     }
 
-    const itensCampeoes = itens.slice(0, 3);
-    if (itensCampeoes.length > 0) {
-      insights.push({
-        tipo: 'oportunidade',
-        titulo: 'Itens campeões de venda',
-        descricao: `Top 3: ${itensCampeoes.map(i => i.nome).join(', ')}`,
-        metrica: 'top_itens',
-        valor: itensCampeoes.length,
-        explicacao: 'Garanta estoque adequado desses produtos',
-        prioridade: 'alta'
-      });
+    // Insight 5: Diversificação
+    if (categorias.length >= 3) {
+      const top3Participacao = categorias.slice(0, 3).reduce((sum, c) => sum + c.participacao, 0);
+      if (top3Participacao < 70) {
+        insights.push({
+          tipo: 'oportunidade',
+          titulo: 'Portfólio bem diversificado',
+          descricao: `Top 3 categorias representam ${top3Participacao.toFixed(1)}% da receita`,
+          metrica: 'diversificacao',
+          valor: top3Participacao,
+          explicacao: 'Boa distribuição reduz riscos de mercado',
+          prioridade: 'baixa'
+        });
+      }
     }
 
-    return insights;
+    return insights.slice(0, 5); // Máximo 5 insights
   }
 
   // Novos métodos para análise por Categorias e Subcategorias
@@ -386,8 +423,11 @@ export class AnalyticsService {
 
     vendas.forEach(venda => {
       venda.itens.forEach(item => {
-        const categoria = item.categoria || 'Sem Subcategoria';
-        const tipo = item.tipo || 'Sem Categoria';
+        // Filtrar itens sem categoria ou subcategoria
+        if (!item.tipo || !item.categoria) return;
+        
+        const categoria = item.categoria;
+        const tipo = item.tipo;
         const key = `${tipo}::${categoria}`;
         
         const existing = subcategoriasMap.get(key);

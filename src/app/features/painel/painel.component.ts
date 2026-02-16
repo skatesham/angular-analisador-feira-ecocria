@@ -74,6 +74,12 @@ export class PainelComponent implements OnInit {
     }, 0);
   });
 
+  totalFeiras = computed(() => {
+    const vendas = this.vendas();
+    const datasUnicas = new Set(vendas.map(v => v.data.toISOString().split('T')[0]));
+    return datasUnicas.size;
+  });
+
   graficoTopCategorias = computed(() => this.gerarGraficoTopItens());
   graficoTopSubcategorias = computed(() => this.gerarGraficoSubcategorias());
   graficoEvolucao = computed(() => this.gerarGraficoEvolucaoPorData());
@@ -161,6 +167,15 @@ export class PainelComponent implements OnInit {
     this.categoriasSelecionadas.set([]);
     this.buscaTexto.set('');
     this.analytics.setFiltros({});
+  }
+
+  voltarParaAnalisador(): void {
+    this.router.navigate(['/analisar']);
+  }
+
+  salvarAnalise(): void {
+    // TODO: Implementar salvamento no IndexedDB
+    console.log('Salvar análise - a implementar');
   }
 
   exportarCsvCompleto(): void {
