@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1771217573882,
+  "timestamp": 1771218011222,
   "index": "/angular-analisador-feira-ecocria/index.html",
   "assetGroups": [
     {
@@ -13,7 +13,6 @@
       "urls": [
         "/angular-analisador-feira-ecocria/chunk-25FVTBV7.js",
         "/angular-analisador-feira-ecocria/chunk-4O3FVBGX.js",
-        "/angular-analisador-feira-ecocria/chunk-64GRYYYV.js",
         "/angular-analisador-feira-ecocria/chunk-6GOTOEVD.js",
         "/angular-analisador-feira-ecocria/chunk-6JC4TW2Y.js",
         "/angular-analisador-feira-ecocria/chunk-A2I2B7LS.js",
@@ -30,6 +29,7 @@
         "/angular-analisador-feira-ecocria/chunk-LOLU4H5C.js",
         "/angular-analisador-feira-ecocria/chunk-LZERMPTP.js",
         "/angular-analisador-feira-ecocria/chunk-RFUZCJ55.js",
+        "/angular-analisador-feira-ecocria/chunk-TPTU2CKJ.js",
         "/angular-analisador-feira-ecocria/chunk-URCMC7Z2.js",
         "/angular-analisador-feira-ecocria/chunk-XGBSE7XG.js",
         "/angular-analisador-feira-ecocria/chunk-Y3CDXOR6.js",
@@ -38,10 +38,10 @@
         "/angular-analisador-feira-ecocria/chunk-ZAJI6H7K.js",
         "/angular-analisador-feira-ecocria/favicon.ico",
         "/angular-analisador-feira-ecocria/index.html",
-        "/angular-analisador-feira-ecocria/main-V2VAXVFY.js",
+        "/angular-analisador-feira-ecocria/main-TBEXIJRZ.js",
         "/angular-analisador-feira-ecocria/manifest.webmanifest",
         "/angular-analisador-feira-ecocria/polyfills-5CFQRCPP.js",
-        "/angular-analisador-feira-ecocria/styles-ZHYSF2GO.css"
+        "/angular-analisador-feira-ecocria/styles-HXUSGQZ5.css"
       ],
       "patterns": []
     },
@@ -131,7 +131,6 @@
     "/angular-analisador-feira-ecocria/android/android-launchericon-96-96.png": "3bcb3c67f798d96c6f44c0b1114fd9dfbefb7a90",
     "/angular-analisador-feira-ecocria/chunk-25FVTBV7.js": "89d87742614903f900a8f919e38e20a1214d9fa8",
     "/angular-analisador-feira-ecocria/chunk-4O3FVBGX.js": "0a7d61cb125ca54b1f654c1a90b84fbdbfb4b193",
-    "/angular-analisador-feira-ecocria/chunk-64GRYYYV.js": "dcda59d5b0b068ce204f0c5e0e6c73520527ec02",
     "/angular-analisador-feira-ecocria/chunk-6GOTOEVD.js": "2f74659359df108c22f21ec91790051cad5ff6ca",
     "/angular-analisador-feira-ecocria/chunk-6JC4TW2Y.js": "7a02386fd1bf72f7cfd87305a519bbd3a5ccf088",
     "/angular-analisador-feira-ecocria/chunk-A2I2B7LS.js": "f9b160457a37f90e18fb95ddb833015422ef6a40",
@@ -148,6 +147,7 @@
     "/angular-analisador-feira-ecocria/chunk-LOLU4H5C.js": "d577cf97325c2442c369ee1335467d36c5630e46",
     "/angular-analisador-feira-ecocria/chunk-LZERMPTP.js": "645eb254e9aa212b9b7d6d5fb1310aa860127a85",
     "/angular-analisador-feira-ecocria/chunk-RFUZCJ55.js": "6bbddaa607aa8a85e233cd297faeb9441a65008b",
+    "/angular-analisador-feira-ecocria/chunk-TPTU2CKJ.js": "dd91e3fe7c4f3256627262bfca3459fb47d88f9e",
     "/angular-analisador-feira-ecocria/chunk-URCMC7Z2.js": "0419ab92e760426b5b151e120238b31af3e36b7c",
     "/angular-analisador-feira-ecocria/chunk-XGBSE7XG.js": "88e987d379ad1d84afcbe6a951ea27587eb00ace",
     "/angular-analisador-feira-ecocria/chunk-Y3CDXOR6.js": "1d56e0da7cfe15b18e4ed9079b27304851e1a021",
@@ -167,7 +167,7 @@
     "/angular-analisador-feira-ecocria/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
     "/angular-analisador-feira-ecocria/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
     "/angular-analisador-feira-ecocria/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
-    "/angular-analisador-feira-ecocria/index.html": "71cd94a4ee9d0b620bd3cc6d1a67906e8e22012b",
+    "/angular-analisador-feira-ecocria/index.html": "9d5128c9bb01555b60e7cc415204e7c9f339a3af",
     "/angular-analisador-feira-ecocria/ios/100.png": "65051b04fa17609a792e11be279cb60b000e1a95",
     "/angular-analisador-feira-ecocria/ios/1024.png": "202b70afb06cb1693528c9f3789d2263523f7121",
     "/angular-analisador-feira-ecocria/ios/114.png": "24f4fb4619f32b5db547664ec674adffa9d17aca",
@@ -195,7 +195,7 @@
     "/angular-analisador-feira-ecocria/ios/80.png": "375223f9189e5ddc2b83b9fda7d77cfa837160b1",
     "/angular-analisador-feira-ecocria/ios/87.png": "2f418772111e9aedde61e60e1c02043a1d07269f",
     "/angular-analisador-feira-ecocria/logo.png": "cde4ae731f40f1948331e05013e41fd2d5936c38",
-    "/angular-analisador-feira-ecocria/main-V2VAXVFY.js": "a24cd53ce953615bbdbf947dba9dcfbf710e2741",
+    "/angular-analisador-feira-ecocria/main-TBEXIJRZ.js": "8c8d7ee5786dd34fc8d457065f40879a1e0e3c63",
     "/angular-analisador-feira-ecocria/manifest.json": "3a9a5d5f82d8514e17b090bae9157df94a013dfd",
     "/angular-analisador-feira-ecocria/manifest.webmanifest": "942f0f3189ccdbccbc7a503a62a7dd8be50d2e69",
     "/angular-analisador-feira-ecocria/media/primeicons-4GST5W3O.woff2": "837c1279b6af9d297f34fdb43e6fcc9206a79f32",
@@ -203,7 +203,7 @@
     "/angular-analisador-feira-ecocria/media/primeicons-GEFHGEHP.ttf": "3b878ca7e88945a8ec25814810b95367d8977ae6",
     "/angular-analisador-feira-ecocria/media/primeicons-P53SE5CV.woff": "361e3af71bb4e515feead2f787348a92a5527158",
     "/angular-analisador-feira-ecocria/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
-    "/angular-analisador-feira-ecocria/styles-ZHYSF2GO.css": "b76bbad86e683bf418c9ef1dfd80e068df2ac0c4"
+    "/angular-analisador-feira-ecocria/styles-HXUSGQZ5.css": "d00519c74077dc6bde42c554c54a1534b06b2bd4"
   },
   "navigationUrls": [
     {
