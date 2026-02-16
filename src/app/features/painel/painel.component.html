@@ -140,11 +140,11 @@
               </h3>
             </div>
           </ng-template>
-          <div echarts [options]="graficoTopItens()" class="h-96"></div>
+          <div echarts [options]="graficoTopCategorias()" class="h-96"></div>
         </p-card>
       </div>
 
-      <!-- Participação por Tipo -->
+      <!-- Top Subcategorias -->
       <div 
         pAnimateOnScroll 
         enterClass="animate-enter fade-in-10 slide-in-from-r-8 animate-duration-1000"
@@ -153,11 +153,11 @@
           <ng-template pTemplate="header">
             <div class="p-4 border-b border-surface-200 dark:border-surface-700">
               <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
-                Participação por Tipo
+                Top 10 Subcategorias
               </h3>
             </div>
           </ng-template>
-          <div echarts [options]="graficoParticipacao()" class="h-96"></div>
+          <div echarts [options]="graficoTopSubcategorias()" class="h-96"></div>
         </p-card>
       </div>
     </div>

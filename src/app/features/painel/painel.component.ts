@@ -74,8 +74,9 @@ export class PainelComponent implements OnInit {
     }, 0);
   });
 
-  graficoTopItens = computed(() => this.gerarGraficoTopItens());
-  graficoEvolucao = computed(() => this.gerarGraficoEvolucao());
+  graficoTopCategorias = computed(() => this.gerarGraficoTopItens());
+  graficoTopSubcategorias = computed(() => this.gerarGraficoSubcategorias());
+  graficoEvolucao = computed(() => this.gerarGraficoEvolucaoPorData());
   graficoParticipacao = computed(() => this.gerarGraficoParticipacao());
 
   ngOnInit(): void {
@@ -185,59 +186,180 @@ export class PainelComponent implements OnInit {
   }
 
   private gerarGraficoTopItens(): any {
-    const itens = this.itensVendidos().slice(0, 10);
+    const categorias = this.analytics.calcularTopCategorias(5);
+    const cores = ['#3b82f6', '#10b981', '#0ea5e9', '#8b5cf6', '#ec4899'];
     
     return {
+      title: {
+        text: 'Top 5 Categorias por Receita',
+        left: 'center',
+        textStyle: { fontSize: 16, fontWeight: 'bold' }
+      },
       tooltip: {
         trigger: 'axis',
-        axisPointer: { type: 'shadow' }
+        axisPointer: { type: 'shadow' },
+        formatter: (params: any) => {
+          const data = params[0];
+          return `${data.name}<br/>Receita: R$ ${data.value.toFixed(2)}`;
+        }
       },
       grid: {
         left: '3%',
         right: '4%',
         bottom: '3%',
+        top: '15%',
         containLabel: true
       },
       xAxis: {
-        type: 'value'
+        type: 'category',
+        data: categorias.map(c => c.nome),
+        axisLabel: {
+          interval: 0,
+          rotate: 0
+        }
       },
       yAxis: {
-        type: 'category',
-        data: itens.map(i => i.nome).reverse()
+        type: 'value',
+        name: 'Receita (R$)',
+        axisLabel: {
+          formatter: (value: number) => `R$ ${value.toFixed(0)}`
+        }
       },
       series: [{
         name: 'Receita',
         type: 'bar',
-        data: itens.map(i => i.receita).reverse(),
-        itemStyle: {
-          color: '#3b82f6'
+        data: categorias.map((c, i) => ({
+          value: c.receita,
+          itemStyle: { color: cores[i] }
+        })),
+        label: {
+          show: true,
+          position: 'top',
+          formatter: (params: any) => `R$ ${params.value.toFixed(0)}`
+        },
+        barWidth: '60%'
+      }]
+    };
+  }
+
+  private gerarGraficoSubcategorias(): any {
+    const subcategorias = this.analytics.calcularTopSubcategorias(10);
+    const cores = ['#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899'];
+    
+    return {
+      title: {
+        text: 'Top 10 Subcategorias por Receita',
+        left: 'center',
+        textStyle: { fontSize: 16, fontWeight: 'bold' }
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        formatter: (params: any) => {
+          const data = params[0];
+          return `${data.name}<br/>Receita: R$ ${data.value.toFixed(2)}`;
         }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '15%',
+        top: '15%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        data: subcategorias.map(s => s.nome),
+        axisLabel: {
+          interval: 0,
+          rotate: 45
+        }
+      },
+      yAxis: {
+        type: 'value',
+        name: 'Receita (R$)',
+        axisLabel: {
+          formatter: (value: number) => `R$ ${value.toFixed(0)}`
+        }
+      },
+      series: [{
+        name: 'Receita',
+        type: 'bar',
+        data: subcategorias.map((s, i) => ({
+          value: s.receita,
+          itemStyle: { color: cores[i] }
+        })),
+        label: {
+          show: true,
+          position: 'top',
+          formatter: (params: any) => `R$ ${params.value.toFixed(0)}`,
+          fontSize: 10
+        },
+        barWidth: '60%'
       }]
     };
   }
 
   private gerarGraficoEvolucao(): any {
-    const evolucao = this.evolucao();
+    const evolucao = this.analytics.calcularEvolucaoPorData();
     
     return {
+      title: {
+        text: 'Evolução de Vendas por Data',
+        left: 'center',
+        textStyle: { fontSize: 16, fontWeight: 'bold' }
+      },
       tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
+        formatter: (params: any) => {
+          let result = `${params[0].name}<br/>`;
+          params.forEach((param: any) => {
+            if (param.seriesName === 'Receita') {
+              result += `${param.marker} ${param.seriesName}: R$ ${param.value.toFixed(2)}<br/>`;
+            } else {
+              result += `${param.marker} ${param.seriesName}: ${param.value}<br/>`;
+            }
+          });
+          return result;
+        }
+      },
+      legend: {
+        data: ['Receita', 'Quantidade'],
+        top: '10%'
       },
       grid: {
         left: '3%',
         right: '4%',
         bottom: '3%',
+        top: '20%',
         containLabel: true
       },
       xAxis: {
         type: 'category',
-        data: evolucao.map(e => e.periodo)
+        data: evolucao.map(e => {
+          const date = new Date(e.data);
+          return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        }),
+        axisLabel: { rotate: 45 }
       },
-      yAxis: {
-        type: 'value'
-      },
-      series: [{
-        name: 'Receita',
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Receita (R$)',
+          position: 'left',
+          axisLabel: {
+            formatter: (value: number) => `R$ ${value.toFixed(0)}`
+          }
+        },
+        {
+          type: 'value',
+          name: 'Quantidade',
+          position: 'right'
+        }
+      ],
+      series: [
+        {
+          name: 'Receita',
         type: 'line',
         data: evolucao.map(e => e.receita),
         smooth: true,
@@ -251,8 +373,86 @@ export class PainelComponent implements OnInit {
     };
   }
 
+  private gerarGraficoEvolucaoPorData(): any {
+    const evolucao = this.analytics.calcularEvolucaoPorData();
+    
+    return {
+      title: {
+        text: 'Evolução de Vendas por Data',
+        left: 'center',
+        textStyle: { fontSize: 16, fontWeight: 'bold' }
+      },
+      tooltip: {
+        trigger: 'axis',
+        formatter: (params: any) => {
+          let result = `${params[0].name}<br/>`;
+          params.forEach((param: any) => {
+            if (param.seriesName === 'Receita') {
+              result += `${param.marker} ${param.seriesName}: R$ ${param.value.toFixed(2)}<br/>`;
+            } else {
+              result += `${param.marker} ${param.seriesName}: ${param.value}<br/>`;
+            }
+          });
+          return result;
+        }
+      },
+      legend: {
+        data: ['Receita', 'Quantidade'],
+        top: '10%'
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '10%',
+        top: '20%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        data: evolucao.map(e => {
+          const date = new Date(e.data);
+          return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        }),
+        axisLabel: { rotate: 45 }
+      },
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Receita (R$)',
+          position: 'left',
+          axisLabel: {
+            formatter: (value: number) => `R$ ${value.toFixed(0)}`
+          }
+        },
+        {
+          type: 'value',
+          name: 'Quantidade',
+          position: 'right'
+        }
+      ],
+      series: [
+        {
+          name: 'Receita',
+          type: 'line',
+          data: evolucao.map(e => e.receita),
+          smooth: true,
+          itemStyle: { color: '#3b82f6' },
+          areaStyle: { color: 'rgba(59, 130, 246, 0.1)' }
+        },
+        {
+          name: 'Quantidade',
+          type: 'line',
+          yAxisIndex: 1,
+          data: evolucao.map(e => e.quantidade),
+          smooth: true,
+          itemStyle: { color: '#10b981' }
+        }
+      ]
+    };
+  }
+
   private gerarGraficoParticipacao(): any {
-    const categorias = this.categorias().slice(0, 8);
+    const categorias = this.analytics.calcularTopCategorias(8);
     
     return {
       tooltip: {
