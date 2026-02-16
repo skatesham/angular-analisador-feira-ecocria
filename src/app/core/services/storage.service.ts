@@ -45,7 +45,8 @@ export class StorageService {
 
   async salvarAnalise(
     nome: string,
-    resultado: ResultadoProcessamento
+    resultado: ResultadoProcessamento,
+    id?: string
   ): Promise<AnalisesSalva> {
     if (this.sessaoPrivada()) {
       throw new Error('Não é possível salvar em sessão privada');
@@ -65,7 +66,7 @@ export class StorageService {
     const valorTotal = vendas.reduce((sum, v) => sum + v.valorTotal, 0);
 
     const analise: AnalisesSalva = {
-      id: uuidv4(),
+      id: id || uuidv4(),
       nome,
       resultado,
       dataInicio,
@@ -78,7 +79,7 @@ export class StorageService {
     return new Promise((resolve, reject) => {
       const transaction = this.db()!.transaction([this.STORE_NAME], 'readwrite');
       const store = transaction.objectStore(this.STORE_NAME);
-      const request = store.add(analise);
+      const request = id ? store.put(analise) : store.add(analise);
 
       request.onsuccess = () => resolve(analise);
       request.onerror = () => reject(request.error);

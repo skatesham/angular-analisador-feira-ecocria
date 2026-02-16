@@ -33,7 +33,7 @@ type EtapaProcessamento = 'upload' | 'lendo' | 'interpretando' | 'padronizando' 
     ConfirmDialogModule,
     ToastModule
   ],
-  providers: [ConfirmationService, MessageService],
+  providers: [MessageService],
   templateUrl: './analisador.component.html',
   styleUrl: './analisador.component.css'
 })

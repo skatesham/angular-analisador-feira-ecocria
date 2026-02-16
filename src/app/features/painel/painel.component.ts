@@ -1,5 +1,6 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ComponentCanDeactivate } from '../../core/guards/unsaved-changes.guard';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
@@ -57,13 +58,12 @@ echarts.use([
   ],
   providers: [
     provideEchartsCore({ echarts }),
-    ConfirmationService,
     MessageService
   ],
   templateUrl: './painel.component.html',
   styleUrl: './painel.component.css'
 })
-export class PainelComponent implements OnInit {
+export class PainelComponent implements OnInit, ComponentCanDeactivate {
   private analytics = inject(AnalyticsService);
   private exportService = inject(ExportService);
   private storageService = inject(StorageService);
@@ -86,6 +86,9 @@ export class PainelComponent implements OnInit {
   
   // Track if loaded from histórico
   analiseCarregadaId = computed(() => this.analytics.getAnaliseCarregadaId());
+  
+  // Track unsaved changes
+  temAlteracoesNaoSalvas = signal<boolean>(false);
   
   // Stable periods availability (computed once on init)
   periodosDisponiveisStable = signal({ tem1Ano: false, tem3Anos: false });
@@ -197,6 +200,11 @@ export class PainelComponent implements OnInit {
       return;
     }
 
+    // Mark as unsaved if this is a new analysis (not loaded from storage)
+    if (!this.analiseCarregadaId()) {
+      this.temAlteracoesNaoSalvas.set(true);
+    }
+
     // Calculate available periods once and store
     this.calcularPeriodosDisponiveis();
 
@@ -232,6 +240,7 @@ export class PainelComponent implements OnInit {
   }
 
   aplicarFiltroTempo(tipo: FiltroTempoTipo): void {
+    this.temAlteracoesNaoSalvas.set(true);
     this.filtroTempo.set(tipo);
     
     const hoje = new Date();
@@ -339,6 +348,7 @@ export class PainelComponent implements OnInit {
 
   async salvarAnalise(): Promise<void> {
     const vendas = this.vendas();
+    const analiseId = this.analiseCarregadaId();
     
     const resultado: ResultadoProcessamento = {
       vendas: vendas,
@@ -361,13 +371,20 @@ export class PainelComponent implements OnInit {
     const nome = `Análise ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
 
     try {
-      // Desabilitar sessão privada para permitir salvamento
       this.storageService.setSessaoPrivada(false);
-      await this.storageService.salvarAnalise(nome, resultado);
+      const analiseSalva = await this.storageService.salvarAnalise(nome, resultado, analiseId || undefined);
+      
+      // Update the loaded analysis ID if this was a new save
+      if (!analiseId) {
+        this.analytics.setAnaliseCarregadaId(analiseSalva.id);
+      }
+      
+      this.temAlteracoesNaoSalvas.set(false);
+      
       this.messageService.add({
         severity: 'success',
         summary: 'Sucesso',
-        detail: 'Análise salva com sucesso!',
+        detail: analiseId ? 'Análise atualizada com sucesso!' : 'Análise salva com sucesso!',
         life: 3000
       });
     } catch (error) {
@@ -793,6 +810,11 @@ export class PainelComponent implements OnInit {
         }
       ]
     };
+  }
+
+  canDeactivate(): boolean {
+    // Allow navigation if no unsaved changes or if analysis is already saved
+    return !this.temAlteracoesNaoSalvas() || !!this.analiseCarregadaId();
   }
 
   private gerarGraficoParticipacao(): any {

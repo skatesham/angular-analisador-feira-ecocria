@@ -1,18 +1,29 @@
 <p-toast position="bottom-right" />
-<p-confirmDialog [style]="{ width: '450px' }" [baseZIndex]="10000" styleClass="headless-confirm" />
+
+<!-- Headless ConfirmDialog -->
+<p-confirmdialog #cd>
+  <ng-template #headless let-message let-onAccept="onAccept" let-onReject="onReject">
+    @if (message) {
+      <div class="flex flex-col items-center p-8 bg-surface-0 dark:bg-surface-900 rounded-2xl">
+        <div class="rounded-full bg-primary text-primary-contrast inline-flex justify-center items-center h-20 w-20 -mt-18">
+          <i class="pi pi-exclamation-triangle !text-4xl"></i>
+        </div>
+        <span class="font-bold text-2xl block mb-2 mt-6 text-surface-900 dark:text-surface-0">{{ message.header }}</span>
+        <p class="text-muted-color text-center mb-0">{{ message.message }}</p>
+        <div class="flex items-center gap-3 mt-6">
+          <p-button [label]="message.rejectLabel || 'Cancelar'" [outlined]="true" severity="secondary" (onClick)="onReject()" styleClass="w-32" />
+          <p-button [label]="message.acceptLabel || 'Confirmar'" [severity]="message.acceptButtonStyleClass?.includes('danger') ? 'danger' : 'primary'" (onClick)="onAccept()" styleClass="w-32" />
+        </div>
+      </div>
+    }
+  </ng-template>
+</p-confirmdialog>
 
 <div class="min-h-screen bg-surface-50 dark:bg-surface-950 py-8 md:py-12">
   <div class="container mx-auto px-4 md:px-6">
     <div class="max-w-5xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-8">
-        <div class="flex items-center justify-center gap-3 mb-4">
-          <img src="logo.png" alt="Ecocria" class="h-16 w-16" />
-          <div class="flex flex-col items-start">
-            <span class="text-3xl font-bold text-surface-900 dark:text-surface-0">Ecocria</span>
-            <span class="text-sm text-surface-500 dark:text-surface-400">Home</span>
-          </div>
-        </div>
         <h1 class="text-3xl md:text-4xl font-bold text-surface-900 dark:text-surface-0 mb-3">
           Analisador de Vendas de Feira
         </h1>

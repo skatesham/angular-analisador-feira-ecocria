@@ -1,14 +1,4 @@
 <div class="flex items-center gap-2">
-  <!-- Language Selector -->
-  <p-select
-    [options]="locales"
-    [ngModel]="currentLocale()"
-    optionLabel="flag"
-    optionValue="code"
-    (onChange)="onLocaleChange($event.value)"
-    styleClass="w-18"
-  />
-
   <!-- Dark/Light Toggle -->
   <button
     type="button"

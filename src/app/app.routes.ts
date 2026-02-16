@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 
 export const routes: Routes = [
   {
@@ -15,7 +16,8 @@ export const routes: Routes = [
       },
       {
         path: 'painel',
-        loadComponent: () => import('./features/painel/painel.component').then(m => m.PainelComponent)
+        loadComponent: () => import('./features/painel/painel.component').then(m => m.PainelComponent),
+        canDeactivate: [unsavedChangesGuard]
       },
       {
         path: 'como-funciona',

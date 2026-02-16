@@ -31,6 +31,7 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.16",
     "@angular/router": "^20.3.0",
+    "@angular/service-worker": "^20.3.0",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "@primeuix/themes": "^2.0.3",
