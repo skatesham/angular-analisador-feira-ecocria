@@ -1,0 +1,129 @@
+{
+  "app": {
+    "title": "Feira da Ecocria",
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "empty": "Nenhum dado encontrado"
+  },
+  "nav": {
+    "home": "Início",
+    "howItWorks": "Como Funciona",
+    "settings": "Configurações",
+    "analyze": "Analisar"
+  },
+  "landing": {
+    "hero": {
+      "title": "Transforme anotações de feira em insights acionáveis",
+      "subtitle": "Análise rápida de vendas para pequenos produtores e ateliês. 100% local, sem enviar seus dados para nenhum servidor.",
+      "cta": "Analisar Minhas Vendas",
+      "ctaSecondary": "Ver Como Funciona",
+      "privacy": "Seus dados ficam no seu dispositivo. Nenhuma informação é enviada para servidores externos."
+    },
+    "problem": {
+      "title": "O Problema",
+      "item1": "Anotações em papel ou TXT sem organização",
+      "item2": "Difícil saber quais produtos vendem mais",
+      "item3": "Sem visão clara de faturamento e tendências",
+      "item4": "Decisões de produção baseadas em achismo"
+    },
+    "solution": {
+      "title": "A Solução",
+      "item1": "Importa seus TXT e gera painel automático",
+      "item2": "Vê top produtos, categorias e tendências",
+      "item3": "Insights claros: O que isso sugere",
+      "item4": "Exporta CSV padronizado para controle"
+    },
+    "howItWorks": {
+      "title": "Como Funciona (3 Passos Simples)",
+      "step1": {
+        "title": "Envie seus TXT",
+        "description": "Arraste seus arquivos de anotações de feira ou selecione do computador. Aceita múltiplos arquivos."
+      },
+      "step2": {
+        "title": "Processamento Automático",
+        "description": "O sistema lê, categoriza e organiza suas vendas automaticamente. Tudo no seu navegador."
+      },
+      "step3": {
+        "title": "Veja Insights e Exporte",
+        "description": "Painel com KPIs, gráficos e sugestões. Exporte CSV padronizado quando quiser."
+      }
+    },
+    "privacy": {
+      "title": "100% Local e Privado",
+      "description": "Todos os seus dados de vendas nunca saem do seu dispositivo. Todo o processamento acontece no seu navegador. Você decide se quer salvar localmente ou usar sessão privada.",
+      "feature1": "Sem servidores externos",
+      "feature2": "Sem rastreamento",
+      "feature3": "Apague tudo quando quiser"
+    },
+    "faq": {
+      "title": "Perguntas Frequentes",
+      "q1": {
+        "question": "Que formato de arquivo aceita?",
+        "answer": "Aceita arquivos TXT com suas anotações de feira no formato simples (data + produtos + valores). Também aceita CSV gerado pelo próprio sistema para reimportar."
+      },
+      "q2": {
+        "question": "Quantos arquivos posso enviar?",
+        "answer": "Pode enviar múltiplos arquivos de uma vez (ex: 4 feiras do mês). O sistema consolida tudo em um único painel."
+      },
+      "q3": {
+        "question": "Meus dados ficam salvos?",
+        "answer": "Por padrão, não. Você usa em sessão privada e pode apagar tudo ao fechar. Se quiser, pode optar por salvar localmente no seu navegador para reabrir depois."
+      },
+      "q4": {
+        "question": "Funciona offline?",
+        "answer": "Após carregar a página uma vez, funciona offline. Todo o processamento é local, não precisa de internet."
+      }
+    },
+    "cta": {
+      "title": "Pronto para ter clareza nas suas vendas?",
+      "subtitle": "Comece agora. Leva menos de 2 minutos.",
+      "button": "Analisar Minhas Vendas"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "subtitle": "Personalize sua experiência",
+    "language": {
+      "title": "Idioma",
+      "label": "Selecione o idioma",
+      "info": "A interface será traduzida para o idioma selecionado"
+    },
+    "appearance": {
+      "title": "Aparência",
+      "darkMode": "Modo Escuro",
+      "darkModeDescription": "Ativar tema escuro para reduzir o brilho da tela"
+    },
+    "privacy": {
+      "title": "Privacidade",
+      "localTitle": "100% Local",
+      "localDescription": "Todos os seus dados são processados localmente no seu navegador. Nenhuma informação é enviada para servidores externos.",
+      "feature1": "Sem rastreamento",
+      "feature2": "Sem cookies de terceiros",
+      "feature3": "Dados ficam no seu dispositivo",
+      "sessionTitle": "Sessão Privada",
+      "sessionDescription": "Por padrão, seus dados não são salvos. Ao fechar o navegador, tudo é apagado. Você pode optar por salvar localmente no IndexedDB se preferir."
+    },
+    "about": {
+      "title": "Sobre",
+      "version": "Versão:",
+      "technologies": "Tecnologias:",
+      "license": "Licença:"
+    }
+  },
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "add": "Adicionar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "yes": "Sim",
+    "no": "Não",
+    "close": "Fechar"
+  }
+}
