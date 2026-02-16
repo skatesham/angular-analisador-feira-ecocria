@@ -251,6 +251,8 @@ export class PainelComponent implements OnInit {
     const nome = `Análise ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
 
     try {
+      // Desabilitar sessão privada para permitir salvamento
+      this.storageService.setSessaoPrivada(false);
       await this.storageService.salvarAnalise(nome, resultado);
       this.messageService.add({
         severity: 'success',
@@ -279,6 +281,8 @@ export class PainelComponent implements OnInit {
       acceptButtonStyleClass: 'p-button-danger',
       accept: async () => {
         try {
+          // Desabilitar sessão privada para permitir exclusão
+          this.storageService.setSessaoPrivada(false);
           await this.storageService.apagarTudo();
           this.messageService.add({
             severity: 'success',

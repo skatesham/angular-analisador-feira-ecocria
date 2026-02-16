@@ -64,6 +64,8 @@ export class AnalisadorComponent implements OnInit {
   ];
 
   async ngOnInit(): Promise<void> {
+    // Desabilitar sessão privada para permitir acesso ao histórico
+    this.storageService.setSessaoPrivada(false);
     await this.carregarHistorico();
   }
 
@@ -104,6 +106,8 @@ export class AnalisadorComponent implements OnInit {
       acceptButtonStyleClass: 'p-button-danger',
       accept: async () => {
         try {
+          // Desabilitar sessão privada para permitir exclusão
+          this.storageService.setSessaoPrivada(false);
           await this.storageService.apagarAnalise(id);
           await this.carregarHistorico();
           this.messageService.add({
