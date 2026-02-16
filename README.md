@@ -303,26 +303,20 @@ public/
 
 ## 🚀 Deploy
 
-### GitHub Pages (Automático)
+### Deploy para GitHub Pages
 
-O deploy é feito automaticamente via GitHub Actions quando há push na branch `main`.
-
-O workflow faz build e publica os arquivos estáticos na branch `gh-pages`.
-
-**Workflow**: `.github/workflows/deploy.yml`
-
-### Deploy Manual
+**Um único comando faz tudo:**
 
 ```bash
-# Build de produção
-npm run build:prod
-
-# Deploy manual usando gh-pages CLI
-npm install -g angular-cli-ghpages
 npm run deploy
 ```
 
-### Configuração no GitHub
+Este comando:
+1. Faz build de produção
+2. Publica na branch `gh-pages`
+3. Pronto! 🎉
+
+### Configuração no GitHub (primeira vez)
 
 1. Vá em **Settings** → **Pages**
 2. Em **Source**, selecione **Deploy from a branch**
@@ -331,6 +325,12 @@ npm run deploy
 
 A aplicação estará disponível em:
 **https://skatesham.github.io/angular-analisador-feira-ecocria/**
+
+### Build Local (sem deploy)
+
+```bash
+npm run build:prod
+```
 
 ---
 
