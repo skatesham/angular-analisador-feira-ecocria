@@ -71,106 +71,304 @@ Sistema desenvolvido para **pequenos produtores e ateliês** que vendem em feira
 | **papaparse** | 5.5.3 | Parse de CSV |
 | **xlsx** | 0.18.5 | Parse de Excel |
 | **uuid** | 13.0.0 | Geração de IDs |
-| @ngx-translate | v17 | Internacionalização (i18n) |
-| ECharts + ngx-echarts | 6 / 20 | Gráficos |
-| uuid | v4 | Geração de IDs |
-| crypto-js | latest | Utilitários de criptografia |
 
-## Início Rápido
+---
+
+## 🚀 Início Rápido
+
+### Instalação
 
 ```bash
+# Clonar repositório
+git clone https://github.com/skatesham/angular-analisador-feira-ecocria.git
+cd angular-analisador-feira-ecocria
+
 # Instalar dependências
 npm install
 
 # Rodar em desenvolvimento
 npm start
 # → http://localhost:4200
-
-# Build de produção
-npm run build
 ```
 
-## Estrutura do Projeto
+### Build e Deploy
+
+```bash
+# Build de produção
+npm run build:prod
+
+# Deploy para GitHub Pages (manual)
+npm run deploy
+```
+
+---
+
+## 📁 Estrutura do Projeto
 
 ```
 src/app/
-  core/
-    config/         → Environments (dev/prod) + AppConfigService + primeng.config.ts
-    http/           → Interceptors (auth token + error handling)
-    auth/           → AuthService + Guards (auth, guest, role)
-    i18n/           → LocaleService + translate loader
-    theme/          → ThemeService (light/dark com persistência)
-    utils/          → uuid, crypto, storage, formatters, validation
-  layouts/
-    landing-layout/ → Layout público (navbar + footer)
-    app-layout/     → Layout autenticado (navbar + sidebar mobile)
-  features/
-    home-landing/   → Página inicial pública (com AnimateOnScroll)
-    auth/login/     → Formulário de login com validação
-    dashboard/      → Dashboard com métricas, ECharts, Dialog, ConfirmDialog
-    settings/       → Configurações (tema + idioma)
-  shared/ui/
-    theme-switcher/    → Botão toggle light/dark
-    country-selector/  → Select de idioma/locale
+├── core/
+│   ├── models/              → Modelos de dados (Venda, Item, Analytics)
+│   ├── services/
+│   │   ├── feira-parser.service.ts      → Parse de TXT de feira
+│   │   ├── file-parser.service.ts       → Parse genérico (TXT/CSV/XLSX)
+│   │   ├── data-pipeline.service.ts     → Pipeline de processamento
+│   │   ├── analytics.service.ts         → Cálculo de KPIs e insights
+│   │   ├── export.service.ts            → Export CSV/TSV
+│   │   └── storage.service.ts           → IndexedDB
+│   └── theme/               → ThemeService (dark mode)
+├── features/
+│   ├── landing-feira/       → Landing page
+│   ├── como-funciona/       → Página "Como Funciona"
+│   ├── analisador/          → Upload e processamento
+│   ├── painel/              → Dashboard com KPIs e gráficos
+│   └── configuracoes/       → Configurações (idioma, tema, privacidade)
+├── layouts/
+│   └── landing-layout/      → Layout público (navbar + footer)
+└── shared/ui/
+    └── theme-switcher/      → Toggle light/dark
+
 public/
-  i18n/             → pt-BR.json, en-US.json
+└── i18n/                    → pt-BR.json, en.json
 ```
 
-## Funcionalidades Prontas
+---
 
-### Layouts
-- **LandingLayout** — público, com navbar e footer
-- **AppLayout** — autenticado, com navbar, sidebar mobile (drawer) e guards
+## 🎨 Componentes Principais
 
-### Autenticação
-- `AuthService` com signals (token, user, roles)
-- `authGuard` — protege rotas `/app/*`
-- `guestGuard` — redireciona logados de `/auth/*`
-- `roleGuard` — controle por roles/permissões
+### **Landing Feira** (`/`)
+- Hero com proposta de valor
+- Problema → Solução
+- Como funciona (3 passos)
+- Privacidade (100% local)
+- FAQ
+- Animações com `pAnimateOnScroll`
 
-### Configuração PrimeNG
-- **Arquivo centralizado**: `src/app/core/config/primeng.config.ts`
-- **Tradução PT-BR completa** — todos os componentes (DataTable, Calendar, FileUpload, etc.)
-- **Z-index configurado** — modals (1100), tooltips (1150)
-- **Overlays em body** — evita problemas com overflow
-- **Ripple ativado** por padrão (Material preset sobrescreve)
-- **Filter modes** — configuração para DataTable (text, numeric, date)
+### **Como Funciona** (`/como-funciona`)
+- Fluxo visual (4 etapas)
+- Tabs com exemplos:
+  - TXT de entrada
+  - CSV final
+  - Gráficos e KPIs
+  - Categorias automáticas
+
+### **Analisador** (`/analisar`)
+- Upload múltiplo (drag & drop)
+- Processamento em etapas visíveis
+- Estatísticas (arquivos, vendas, itens, linhas)
+- Warnings para produtos não categorizados
+- Navegação para painel
+
+### **Painel** (`/painel`)
+- 4 KPIs principais
+- Seção "O que isso sugere" (insights)
+- 3 gráficos ECharts:
+  - Top 10 produtos (barras)
+  - Participação por tipo (donut)
+  - Evolução semanal (linha)
+- Tabela com paginação
+- Botões de export
+
+### **Configurações** (`/configuracoes`)
+- Seletor de idioma (pt-BR/en)
+- Toggle dark mode
+- Informações de privacidade
+- **ConfirmDialog** para apagar dados
+- **Toast** de feedback
+
+---
+
+## 🔧 Serviços Core
+
+### **FeiraParserService**
+- Parse de TXT com regras específicas
+- Detecção de datas (DD.MM.YY, DD/MM/YY)
+- Parse de linhas "valor quantidade descrição"
+- Cálculo de semana ISO 8601
+- Dia da semana em português
+
+### **DataPipelineService**
+- Consolidação de múltiplos arquivos
+- Deduplicação
+- Estatísticas de processamento
+- Warnings e erros
+
+### **AnalyticsService**
+- Cálculo de KPIs
+- Insights determinísticos
+- Filtros reativos (signals)
+- Gráficos ECharts
+
+### **ExportService**
+- CSV/TSV formato brasileiro
+- Resumos por item e categoria
+- Nomeação com período
+
+---
+
+## 🌐 i18n (Internacionalização)
+
+### Idiomas Suportados
+- 🇧🇷 Português (Brasil)
+- 🇺🇸 English
+
+### Estrutura
+```json
+{
+  "app": { ... },
+  "nav": { ... },
+  "landing": {
+    "hero": { ... },
+    "problem": { ... },
+    "solution": { ... },
+    "howItWorks": { ... },
+    "privacy": { ... },
+    "faq": { ... }
+  },
+  "settings": { ... },
+  "common": { ... }
+}
+```
+
+### Uso
+```html
+<h1>{{ 'landing.hero.title' | translate }}</h1>
+<p-button [label]="'common.save' | translate" />
+```
+
+**Guias**: Ver `I18N_GUIDE.md` e `I18N_QUICK_START.md`
+
+---
+
+## 🎨 Design System
 
 ### Dark Mode
-- Toggle via `ThemeService` (persiste no `localStorage`)
-- PrimeNG Aura com `darkModeSelector: '.dark'`
-- Tailwind custom variant: `@custom-variant dark (&:where(.dark, .dark *))`
-- **Regra**: todo `bg-surface-*` / `text-surface-*` / `border-surface-*` deve ter par `dark:`
+- Tokens semânticos do PrimeNG
+- Pares obrigatórios: `bg-surface-0 dark:bg-surface-900`
+- Toggle via `ThemeService`
+- Persistência no `localStorage`
 
-### i18n
-- `@ngx-translate/core` v17 com HTTP loader
-- Arquivos em `public/i18n/` (pt-BR, en-US)
-- `LocaleService` com persistência e country selector
-- Toda string visível passa por `| translate`
+### Animações
+- `pAnimateOnScroll` do PrimeNG 20
+- Classes Tailwind: `fade-in-10`, `slide-in-from-*`, `zoom-in-*`, `spin-in-*`
+- Duração: `animate-duration-1000`
 
-### Animações (AnimateOnScroll)
-- Diretiva `pAnimateOnScroll` do PrimeNG com classes Tailwind
-- Padrão: `enterClass="animate-enter fade-in-10 [EFEITO] animate-duration-1000"`
-- Efeitos por contexto: slide lateral (cards grid), slide vertical alternado (testimonials), spin/zoom (métricas)
-- Exemplo aplicado na **Home Landing** (feature cards) e **Dashboard** (metric cards, charts)
+### Componentes PrimeNG
+- **Dialog** - Modais headless
+- **ConfirmDialog** - Confirmações com design customizado
+- **Toast** - Notificações
+- **FileUpload** - Upload com drag & drop
+- **Table** - Tabelas com paginação
+- **Tabs** - Abas
+- **SelectButton** - Seletor de idioma
+- **ToggleSwitch** - Toggle dark mode
 
-### Componentes PrimeNG Integrados
-- **Dialog** — modal responsivo com breakpoints e i18n
-- **ConfirmDialog** — confirmação com Toast feedback
-- **Toast** — notificações de sucesso/erro
-- **Drawer** — sidebar mobile no AppLayout
+---
 
-### Gráficos (ECharts)
-- `ngx-echarts` v20 com ECharts 6
-- Gráfico de barras + linha (Revenue vs Expenses)
-- Gráfico de pizza (Traffic Sources)
-- Adaptação automática ao dark mode via `ThemeService.isDark`
+## 📊 Categorização Automática
 
-### HTTP
-- `authInterceptor` — injeta Bearer token
-- `errorInterceptor` — trata erros 401/403/500
+### Tipos de Produtos (40+)
+- Tábua, Caixa, Escultura, Acessório, Kuripe, Brinquedo, Pente, Palito Cabelo, Luminárias, Incensário, etc.
 
-### Utilitários (`core/utils/`)
+### Categorias (13)
+- Chaveiro, Pingente, Brinco, Anel, Porta Toalha, Carrinho, Quebra-cabeça, etc.
+
+**Arquivo**: `src/app/core/models/categorization.model.ts`
+
+---
+
+## 🔒 Privacidade e Segurança
+
+- ✅ **100% local** - processamento no navegador
+- ✅ **Sem servidores externos** - nenhum dado enviado
+- ✅ **Sessão privada** por padrão
+- ✅ **Opt-in para salvar** localmente (IndexedDB)
+- ✅ **Botão "Apagar dados"** com confirmação
+- ✅ **Sem rastreamento**
+- ✅ **Sem cookies de terceiros**
+
+---
+
+## 📚 Documentação Adicional
+
+- **`IMPLEMENTADO.md`** - Guia completo do sistema implementado
+- **`PROGRESSO.md`** - Status de implementação detalhado
+- **`REFATORACAO.md`** - Documentação da refatoração template → feira
+- **`I18N_GUIDE.md`** - Guia completo de i18n
+- **`I18N_QUICK_START.md`** - Início rápido i18n
+- **`DIALOGS_GUIDE.md`** - Guia de dialogs e confirms
+- **`SETUP.md`** - Instruções de setup
+
+---
+
+## 🚀 Deploy
+
+### GitHub Pages (Automático)
+
+O deploy é feito automaticamente via GitHub Actions quando há push na branch `main`.
+
+O workflow faz build e publica os arquivos estáticos na branch `gh-pages`.
+
+**Workflow**: `.github/workflows/deploy.yml`
+
+### Deploy Manual
+
+```bash
+# Build de produção
+npm run build:prod
+
+# Deploy manual usando gh-pages CLI
+npm install -g angular-cli-ghpages
+npm run deploy
+```
+
+### Configuração no GitHub
+
+1. Vá em **Settings** → **Pages**
+2. Em **Source**, selecione **Deploy from a branch**
+3. Selecione a branch **gh-pages** e pasta **/ (root)**
+4. Clique em **Save**
+
+A aplicação estará disponível em:
+**https://skatesham.github.io/angular-analisador-feira-ecocria/**
+
+---
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
+
+---
+
+## 📄 Licença
+
+MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+---
+
+## 👨‍💻 Autor
+
+**Ecocria**
+
+- GitHub: [@skatesham](https://github.com/skatesham)
+- Projeto: [angular-analisador-feira-ecocria](https://github.com/skatesham/angular-analisador-feira-ecocria)
+
+---
+
+## 🙏 Agradecimentos
+
+- [Angular](https://angular.dev)
+- [PrimeNG](https://primeng.org)
+- [Tailwind CSS](https://tailwindcss.com)
+- [ECharts](https://echarts.apache.org)
+
+---
+
+**Desenvolvido com ❤️ para pequenos produtores e ateliês**
 - `generateUuid()` — UUID v4
 - `encrypt()` / `decrypt()` — CryptoJS AES
 - `storageGet()` / `storageSet()` / `storageRemove()` — localStorage com namespace
