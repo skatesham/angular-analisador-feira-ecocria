@@ -3,7 +3,9 @@ import { Venda } from '../models/venda.model';
 import { 
   KPI, 
   ItemVendido, 
-  CategoriaAnalise, 
+  CategoriaAnalise,
+  CategoriaResumo,
+  SubcategoriaResumo,
   EvolucaoTemporal, 
   FiltrosAnalise,
   InsightAlerta 
@@ -291,5 +293,165 @@ export class AnalyticsService {
     }
 
     return insights;
+  }
+
+  // Novos métodos para análise por Categorias e Subcategorias
+  calcularTopCategorias(limite: number = 5): CategoriaResumo[] {
+    const vendas = this.vendasFiltradas();
+    const categoriasMap = new Map<string, {
+      receita: number;
+      quantidade: number;
+      subcategorias: Map<string, { receita: number; quantidade: number }>;
+    }>();
+
+    // Agrupar por tipo (categoria principal)
+    vendas.forEach(venda => {
+      venda.itens.forEach(item => {
+        const tipo = item.tipo || 'Sem Categoria';
+        const categoria = item.categoria || '';
+        
+        const existing = categoriasMap.get(tipo);
+        if (existing) {
+          existing.receita += item.valorTotal;
+          existing.quantidade += item.quantidade;
+          
+          if (categoria) {
+            const subExisting = existing.subcategorias.get(categoria);
+            if (subExisting) {
+              subExisting.receita += item.valorTotal;
+              subExisting.quantidade += item.quantidade;
+            } else {
+              existing.subcategorias.set(categoria, {
+                receita: item.valorTotal,
+                quantidade: item.quantidade
+              });
+            }
+          }
+        } else {
+          const subcategorias = new Map<string, { receita: number; quantidade: number }>();
+          if (categoria) {
+            subcategorias.set(categoria, {
+              receita: item.valorTotal,
+              quantidade: item.quantidade
+            });
+          }
+          
+          categoriasMap.set(tipo, {
+            receita: item.valorTotal,
+            quantidade: item.quantidade,
+            subcategorias
+          });
+        }
+      });
+    });
+
+    const receitaTotal = Array.from(categoriasMap.values()).reduce((sum, c) => sum + c.receita, 0);
+
+    const categorias = Array.from(categoriasMap.entries()).map(([nome, dados]) => {
+      const subcategorias: SubcategoriaResumo[] = Array.from(dados.subcategorias.entries()).map(([subNome, subDados]) => ({
+        nome: subNome,
+        categoria: nome,
+        receita: subDados.receita,
+        quantidade: subDados.quantidade,
+        participacao: receitaTotal > 0 ? (subDados.receita / receitaTotal) * 100 : 0,
+        precoMedio: subDados.quantidade > 0 ? subDados.receita / subDados.quantidade : 0,
+        frequencia: 0,
+        tendencia: 'estavel' as const,
+        variacao: 0
+      }));
+
+      return {
+        nome,
+        subcategorias,
+        receita: dados.receita,
+        quantidade: dados.quantidade,
+        participacao: receitaTotal > 0 ? (dados.receita / receitaTotal) * 100 : 0,
+        tendencia: 'estavel' as const,
+        variacao: 0,
+        itens: dados.subcategorias.size
+      };
+    });
+
+    return categorias.sort((a, b) => b.receita - a.receita).slice(0, limite);
+  }
+
+  calcularTopSubcategorias(limite: number = 10): SubcategoriaResumo[] {
+    const vendas = this.vendasFiltradas();
+    const subcategoriasMap = new Map<string, {
+      categoria: string;
+      receita: number;
+      quantidade: number;
+      frequencia: number;
+    }>();
+
+    vendas.forEach(venda => {
+      venda.itens.forEach(item => {
+        const categoria = item.categoria || 'Sem Subcategoria';
+        const tipo = item.tipo || 'Sem Categoria';
+        const key = `${tipo}::${categoria}`;
+        
+        const existing = subcategoriasMap.get(key);
+        if (existing) {
+          existing.receita += item.valorTotal;
+          existing.quantidade += item.quantidade;
+          existing.frequencia++;
+        } else {
+          subcategoriasMap.set(key, {
+            categoria: tipo,
+            receita: item.valorTotal,
+            quantidade: item.quantidade,
+            frequencia: 1
+          });
+        }
+      });
+    });
+
+    const receitaTotal = Array.from(subcategoriasMap.values()).reduce((sum, s) => sum + s.receita, 0);
+
+    const subcategorias = Array.from(subcategoriasMap.entries()).map(([key, dados]) => {
+      const [tipo, nome] = key.split('::');
+      return {
+        nome,
+        categoria: tipo,
+        receita: dados.receita,
+        quantidade: dados.quantidade,
+        participacao: receitaTotal > 0 ? (dados.receita / receitaTotal) * 100 : 0,
+        precoMedio: dados.quantidade > 0 ? dados.receita / dados.quantidade : 0,
+        frequencia: dados.frequencia,
+        tendencia: 'estavel' as const,
+        variacao: 0
+      };
+    });
+
+    return subcategorias.sort((a, b) => b.receita - a.receita).slice(0, limite);
+  }
+
+  calcularEvolucaoPorData(): { data: string; receita: number; quantidade: number }[] {
+    const vendas = this.vendasFiltradas();
+    const evolucaoMap = new Map<string, { receita: number; quantidade: number }>();
+
+    vendas.forEach(venda => {
+      const dataKey = venda.data.toISOString().split('T')[0];
+      const quantidade = venda.itens.reduce((sum, i) => sum + i.quantidade, 0);
+      
+      const existing = evolucaoMap.get(dataKey);
+      if (existing) {
+        existing.receita += venda.valorTotal;
+        existing.quantidade += quantidade;
+      } else {
+        evolucaoMap.set(dataKey, {
+          receita: venda.valorTotal,
+          quantidade
+        });
+      }
+    });
+
+    return Array.from(evolucaoMap.entries())
+      .map(([data, dados]) => ({
+        data,
+        receita: dados.receita,
+        quantidade: dados.quantidade
+      }))
+      .sort((a, b) => a.data.localeCompare(b.data));
   }
 }
