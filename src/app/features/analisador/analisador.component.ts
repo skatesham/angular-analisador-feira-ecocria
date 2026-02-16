@@ -84,7 +84,7 @@ export class AnalisadorComponent implements OnInit {
       if (analise) {
         this.analytics.setVendas(analise.resultado.vendas);
         this.analytics.setAnaliseCarregadaId(id);
-        this.router.navigate(['/painel']);
+        this.router.navigate(['/painel'], { queryParams: { id } });
       }
     } catch (error) {
       console.error('Erro ao carregar análise:', error);

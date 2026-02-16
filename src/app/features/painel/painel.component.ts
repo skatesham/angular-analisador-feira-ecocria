@@ -1,5 +1,5 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ComponentCanDeactivate } from '../../core/guards/unsaved-changes.guard';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -70,6 +70,7 @@ export class PainelComponent implements OnInit, ComponentCanDeactivate {
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   filtroTempo = signal<FiltroTempoTipo>('tudo');
   dataInicio = signal<Date | null>(null);
@@ -195,7 +196,13 @@ export class PainelComponent implements OnInit, ComponentCanDeactivate {
     return isDark ? 'dark' : 'light';
   });
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    // Verificar se tem ID na query para recarregar do IndexedDB
+    const analiseId = this.route.snapshot.queryParams['id'];
+    if (analiseId) {
+      await this.carregarAnaliseDoHistorico(analiseId);
+    }
+
     const vendas = this.analytics.vendasFiltradas();
     
     if (vendas.length === 0) {
@@ -214,6 +221,13 @@ export class PainelComponent implements OnInit, ComponentCanDeactivate {
     // Detect mobile
     this.checkMobile();
     window.addEventListener('resize', () => this.checkMobile());
+    
+    // Adicionar listener para confirmar ao atualizar página se houver dados não salvos
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+  }
+  
+  ngOnDestroy(): void {
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
   }
   
   private calcularPeriodosDisponiveis(): void {
@@ -877,4 +891,25 @@ export class PainelComponent implements OnInit, ComponentCanDeactivate {
       }]
     };
   }
+
+  private async carregarAnaliseDoHistorico(id: string): Promise<void> {
+    try {
+      this.storageService.setSessaoPrivada(false);
+      const analise = await this.storageService.carregarAnalise(id);
+      if (analise) {
+        this.analytics.setVendas(analise.resultado.vendas);
+        this.analytics.setAnaliseCarregadaId(id);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar análise do histórico:', error);
+    }
+  }
+  
+  private handleBeforeUnload = (event: BeforeUnloadEvent): void => {
+    // Mostrar confirmação apenas se houver dados não salvos
+    if (this.temAlteracoesNaoSalvas()) {
+      event.preventDefault();
+      event.returnValue = ''; // Chrome requer isso
+    }
+  };
 }
