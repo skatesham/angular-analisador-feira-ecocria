@@ -19,6 +19,29 @@ export interface ItemVendido {
   frequencia: number;
 }
 
+export interface CategoriaResumo {
+  nome: string;
+  subcategorias: SubcategoriaResumo[];
+  receita: number;
+  quantidade: number;
+  participacao: number;
+  tendencia: 'alta' | 'baixa' | 'estavel';
+  variacao: number;
+  itens: number;
+}
+
+export interface SubcategoriaResumo {
+  nome: string;
+  categoria: string;
+  receita: number;
+  quantidade: number;
+  participacao: number;
+  precoMedio: number;
+  frequencia: number;
+  tendencia: 'alta' | 'baixa' | 'estavel';
+  variacao: number;
+}
+
 export interface CategoriaAnalise {
   nome: string;
   receita: number;
@@ -36,10 +59,35 @@ export interface EvolucaoTemporal {
   feiras: number;
 }
 
-export interface FiltrosAnalise {
+export interface QualidadeDados {
+  totalItens: number;
+  itensCategorizados: number;
+  itensSemCategoria: number;
+  percentualQualidade: number;
+  lacunasRegistro: number;
+  inconsistenciasPreco: number;
+  alertas: AlertaQualidade[];
+}
+
+export interface AlertaQualidade {
+  tipo: 'erro' | 'aviso' | 'info';
+  mensagem: string;
+  detalhes: string;
+  acao?: string;
+}
+
+export type FiltroTempoTipo = 'ultima-semana' | 'ultimo-mes' | 'ultimos-3-meses' | 'custom';
+
+export interface FiltroTempo {
+  tipo: FiltroTempoTipo;
   dataInicio?: Date;
   dataFim?: Date;
+}
+
+export interface FiltrosAnalise {
+  tempo?: FiltroTempo;
   categorias?: string[];
+  subcategorias?: string[];
   itens?: string[];
   pagamentos?: string[];
   buscaTexto?: string;
