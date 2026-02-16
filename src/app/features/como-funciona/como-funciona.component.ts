@@ -5,35 +5,51 @@ import { ButtonModule } from 'primeng/button';
 import { AnimateOnScrollModule } from 'primeng/animateonscroll';
 import { TabsModule } from 'primeng/tabs';
 import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
 import { TranslateModule } from '@ngx-translate/core';
+import { PRODUCT_TYPES, PRODUCT_CATEGORIES } from '../../core/models/categorization.model';
 
 @Component({
   selector: 'app-como-funciona',
-  imports: [CardModule, ButtonModule, AnimateOnScrollModule, TabsModule, TableModule, TranslateModule],
+  imports: [CardModule, ButtonModule, AnimateOnScrollModule, TabsModule, TableModule, DialogModule, TranslateModule],
   templateUrl: './como-funciona.component.html',
   styleUrl: './como-funciona.component.css'
 })
 export class ComoFuncionaComponent {
   constructor(private router: Router) {}
 
-  abreviaturas = [
-    { abrev: 'cx', nome: 'Caixa' },
-    { abrev: 'ret', nome: 'Retangular' },
-    { abrev: 'md', nome: 'Médio' },
-    { abrev: 'gd', nome: 'Grande' },
-    { abrev: 'pq', nome: 'Pequeno' },
-    { abrev: 'escult', nome: 'Escultura' },
-    { abrev: 'jag', nome: 'Jaguatirica' },
-    { abrev: 'onc', nome: 'Onça' }
-  ];
+  dialogVisible = false;
 
-  categorias = [
-    { categoria: 'Caixa', subcategorias: 'Retangular, Quadrada, Redonda' },
-    { categoria: 'Acessório', subcategorias: 'Brinco, Colar, Pulseira, Anel, Porta Chaves' },
-    { categoria: 'Escultura', subcategorias: 'Pequena, Média, Grande' },
-    { categoria: 'Palito Cabelo', subcategorias: '-' },
-    { categoria: 'Porta Toalha', subcategorias: '-' }
-  ];
+  // Dados reais do modelo de categorização
+  abreviaturas = Object.entries(PRODUCT_TYPES).map(([key, value]) => ({
+    abrev: key,
+    tipo: value
+  }));
+
+  categorias = (() => {
+    const tiposUnicos = new Map<string, Set<string>>();
+    
+    // Agrupar categorias por tipo
+    Object.entries(PRODUCT_CATEGORIES).forEach(([key, categoria]) => {
+      const tipo = PRODUCT_TYPES[key];
+      if (tipo) {
+        if (!tiposUnicos.has(tipo)) {
+          tiposUnicos.set(tipo, new Set());
+        }
+        tiposUnicos.get(tipo)!.add(categoria);
+      }
+    });
+
+    // Converter para array
+    return Array.from(tiposUnicos.entries()).map(([tipo, categorias]) => ({
+      tipo,
+      categorias: Array.from(categorias).join(', ')
+    }));
+  })();
+
+  mostrarDialog(): void {
+    this.dialogVisible = true;
+  }
 
   irParaAnalisador(): void {
     this.router.navigate(['/analisar']);
