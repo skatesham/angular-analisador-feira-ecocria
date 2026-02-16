@@ -58,9 +58,14 @@ export class PainelComponent implements OnInit {
   filtroTempo = signal<FiltroTempoTipo>('tudo');
   dataInicio = signal<Date | null>(null);
   dataFim = signal<Date | null>(null);
-  categoriasDisponiveis = signal<string[]>([]);
   categoriasSelecionadas = signal<string[]>([]);
   buscaTexto = signal<string>('');
+
+  // Filtros da tabela
+  filtroTabelaDataInicio: Date | null = null;
+  filtroTabelaDataFim: Date | null = null;
+  filtroTabelaCategoria: string | null = null;
+  filtroTabelaNome: string = '';
 
   kpis = computed(() => this.analytics.calcularKPIs());
   itensVendidos = computed(() => this.analytics.calcularItensVendidos());
@@ -87,6 +92,48 @@ export class PainelComponent implements OnInit {
   
   subcategoriasDetalhadas = computed(() => this.analytics.calcularTopSubcategorias(50));
 
+  categoriasDisponiveis = computed(() => {
+    const vendas = this.vendas();
+    const categorias = new Set<string>();
+    vendas.forEach(v => {
+      v.itens.forEach(i => {
+        if (i.tipo) categorias.add(i.tipo);
+      });
+    });
+    return Array.from(categorias).sort().map(c => ({ label: c, value: c }));
+  });
+
+  vendasDetalhadas = computed(() => {
+    const vendas = this.vendas();
+    const detalhes: any[] = [];
+    
+    vendas.forEach(venda => {
+      venda.itens.forEach(item => {
+        // Aplicar filtros
+        if (this.filtroTabelaDataInicio && venda.data < this.filtroTabelaDataInicio) return;
+        if (this.filtroTabelaDataFim && venda.data > this.filtroTabelaDataFim) return;
+        if (this.filtroTabelaCategoria && item.tipo !== this.filtroTabelaCategoria) return;
+        if (this.filtroTabelaNome && !item.nome.toLowerCase().includes(this.filtroTabelaNome.toLowerCase())) return;
+        
+        // Filtrar subcategorias sem categoria (se filtro de categoria estiver ativo)
+        if (this.filtroTabelaCategoria && !item.categoria) return;
+        
+        detalhes.push({
+          data: venda.data,
+          categoria: item.tipo || '-',
+          subcategoria: item.categoria || '-',
+          nome: item.nome,
+          quantidade: item.quantidade,
+          receita: item.valorTotal,
+          precoUnitario: item.precoUnitario || 0
+        });
+      });
+    });
+    
+    // Ordenar por receita decrescente
+    return detalhes.sort((a, b) => b.receita - a.receita);
+  });
+
   echartsTheme = computed(() => {
     // Detectar se está em dark mode
     const isDark = document.documentElement.classList.contains('dark');
@@ -101,14 +148,7 @@ export class PainelComponent implements OnInit {
       return;
     }
 
-    const tipos = new Set<string>();
-    vendas.forEach(v => {
-      v.itens.forEach(i => {
-        if (i.tipo) tipos.add(i.tipo);
-        if (i.categoria) tipos.add(i.categoria);
-      });
-    });
-    this.categoriasDisponiveis.set(Array.from(tipos).sort());
+    // Categorias já são calculadas no computed categoriasDisponiveis
   }
 
   aplicarFiltroTempo(tipo: FiltroTempoTipo): void {

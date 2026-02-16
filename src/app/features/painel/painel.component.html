@@ -192,7 +192,7 @@
       </p-card>
     </div>
 
-    <!-- Tabela de Itens -->
+    <!-- Tabela de Todas as Vendas -->
     <div 
       pAnimateOnScroll 
       enterClass="animate-enter fade-in-10 animate-duration-1000"
@@ -200,42 +200,96 @@
       <p-card>
         <ng-template pTemplate="header">
           <div class="p-4 border-b border-surface-200 dark:border-surface-700">
-            <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
-              Detalhamento por Subcategoria
+            <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0 mb-4">
+              Todas as Vendas
             </h3>
+            
+            <!-- Filtros da Tabela -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-surface-700 dark:text-surface-200 mb-2">
+                  Data Início
+                </label>
+                <p-datepicker 
+                  [(ngModel)]="filtroTabelaDataInicio"
+                  [showIcon]="true"
+                  placeholder="Selecione"
+                  styleClass="w-full"
+                />
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-surface-700 dark:text-surface-200 mb-2">
+                  Data Fim
+                </label>
+                <p-datepicker 
+                  [(ngModel)]="filtroTabelaDataFim"
+                  [showIcon]="true"
+                  placeholder="Selecione"
+                  styleClass="w-full"
+                />
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-surface-700 dark:text-surface-200 mb-2">
+                  Categoria
+                </label>
+                <p-select 
+                  [(ngModel)]="filtroTabelaCategoria"
+                  [options]="categoriasDisponiveis()"
+                  placeholder="Todas"
+                  styleClass="w-full"
+                  [showClear]="true"
+                />
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-surface-700 dark:text-surface-200 mb-2">
+                  Buscar Nome
+                </label>
+                <input 
+                  pInputText 
+                  [(ngModel)]="filtroTabelaNome"
+                  placeholder="Nome do item"
+                  class="w-full"
+                />
+              </div>
+            </div>
           </div>
         </ng-template>
         
         <p-table 
-          [value]="subcategoriasDetalhadas()" 
+          [value]="vendasDetalhadas()" 
           [paginator]="true" 
           [rows]="10"
-          [rowsPerPageOptions]="[10, 25, 50]"
-          [tableStyle]="{ 'min-width': '50rem' }"
+          [rowsPerPageOptions]="[10, 25, 50, 100]"
+          [tableStyle]="{ 'min-width': '60rem' }"
           styleClass="p-datatable-sm"
+          [sortField]="'receita'"
+          [sortOrder]="-1"
         >
           <ng-template pTemplate="header">
             <tr>
-              <th>Categoria</th>
-              <th>Subcategoria</th>
-              <th class="text-right">Quantidade</th>
-              <th class="text-right">Receita</th>
-              <th class="text-right">Participação</th>
-              <th class="text-right">Preço Médio</th>
-              <th class="text-right">Frequência</th>
+              <th pSortableColumn="data">Data <p-sortIcon field="data" /></th>
+              <th pSortableColumn="categoria">Categoria <p-sortIcon field="categoria" /></th>
+              <th pSortableColumn="subcategoria">Subcategoria <p-sortIcon field="subcategoria" /></th>
+              <th pSortableColumn="nome">Nome <p-sortIcon field="nome" /></th>
+              <th class="text-right" pSortableColumn="quantidade">Qtd <p-sortIcon field="quantidade" /></th>
+              <th class="text-right" pSortableColumn="receita">Receita <p-sortIcon field="receita" /></th>
+              <th class="text-right" pSortableColumn="precoUnitario">Preço Unit. <p-sortIcon field="precoUnitario" /></th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-sub>
+          <ng-template pTemplate="body" let-venda>
             <tr>
+              <td>{{ venda.data | date:'dd/MM/yyyy' }}</td>
               <td>
-                <p-tag [value]="sub.categoria || '-'" [severity]="'info'" />
+                <p-tag [value]="venda.categoria || '-'" [severity]="'info'" />
               </td>
-              <td>{{ sub.nome || '-' }}</td>
-              <td class="text-right">{{ sub.quantidade }}</td>
-              <td class="text-right">R$ {{ sub.receita | number:'1.2-2' }}</td>
-              <td class="text-right">{{ sub.participacao | number:'1.1-1' }}%</td>
-              <td class="text-right">R$ {{ sub.precoMedio | number:'1.2-2' }}</td>
-              <td class="text-right">{{ sub.frequencia }}</td>
+              <td>{{ venda.subcategoria || '-' }}</td>
+              <td>{{ venda.nome }}</td>
+              <td class="text-right">{{ venda.quantidade }}</td>
+              <td class="text-right">R$ {{ venda.receita | number:'1.2-2' }}</td>
+              <td class="text-right">R$ {{ venda.precoUnitario | number:'1.2-2' }}</td>
             </tr>
           </ng-template>
         </p-table>
