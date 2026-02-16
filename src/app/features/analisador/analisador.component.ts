@@ -227,8 +227,10 @@ export class AnalisadorComponent implements OnInit {
 
   async carregarDemo(): Promise<void> {
     try {
-      // Buscar arquivo demo do public
-      const response = await fetch('/demo-data/Feira 30.08.25.txt');
+      // Buscar arquivo demo do public - usar caminho relativo para funcionar em produção
+      const baseHref = document.querySelector('base')?.getAttribute('href') || '/';
+      const demoPath = `${baseHref}demo-data/Feira 30.08.25.txt`;
+      const response = await fetch(demoPath);
       if (!response.ok) {
         throw new Error('Erro ao carregar arquivo demo');
       }
