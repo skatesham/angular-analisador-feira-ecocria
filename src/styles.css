@@ -3,3 +3,12 @@
 @import "primeicons/primeicons.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* ConfirmDialog Headless */
+::ng-deep .headless-confirm .p-dialog-header {
+  display: none !important;
+}
+
+::ng-deep .headless-confirm .p-dialog-content {
+  padding-top: 1.5rem !important;
+}

@@ -27,8 +27,8 @@
           </div>
 
           <div class="flex items-center justify-center">
-            <i class="pi pi-arrow-right text-2xl text-surface-400 dark:text-surface-500 hidden md:inline-block"></i>
-            <i class="pi pi-arrow-down text-2xl text-surface-400 dark:text-surface-500 block md:hidden"></i>
+            <i class="pi pi-arrow-right text-2xl text-surface-400 dark:text-surface-500 hidden md:block"></i>
+            <i class="pi pi-arrow-down text-2xl text-surface-400 dark:text-surface-500 md:hidden"></i>
           </div>
 
           <div class="text-center flex-1">
@@ -40,8 +40,8 @@
           </div>
 
           <div class="flex items-center justify-center">
-            <i class="pi pi-arrow-right text-2xl text-surface-400 dark:text-surface-500 hidden md:inline-block"></i>
-            <i class="pi pi-arrow-down text-2xl text-surface-400 dark:text-surface-500 block md:hidden"></i>
+            <i class="pi pi-arrow-right text-2xl text-surface-400 dark:text-surface-500 hidden md:block"></i>
+            <i class="pi pi-arrow-down text-2xl text-surface-400 dark:text-surface-500 md:hidden"></i>
           </div>
 
           <div class="text-center flex-1">
@@ -53,8 +53,8 @@
           </div>
 
           <div class="flex items-center justify-center">
-            <i class="pi pi-arrow-right text-2xl text-surface-400 dark:text-surface-500 hidden md:inline-block"></i>
-            <i class="pi pi-arrow-down text-2xl text-surface-400 dark:text-surface-500 block md:hidden"></i>
+            <i class="pi pi-arrow-right text-2xl text-surface-400 dark:text-surface-500 hidden md:block"></i>
+            <i class="pi pi-arrow-down text-2xl text-surface-400 dark:text-surface-500 md:hidden"></i>
           </div>
 
           <div class="text-center flex-1">
@@ -64,6 +64,69 @@
             <h3 class="font-bold text-surface-900 dark:text-surface-0 mb-2">4. CSV Final</h3>
             <p class="text-sm text-surface-600 dark:text-surface-300">Dados padronizados</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Tabelas de Referência -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <!-- Tabela de Abreviaturas -->
+        <div 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 slide-in-from-l-8 animate-duration-1000"
+        >
+          <p-card>
+            <ng-template pTemplate="header">
+              <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+                <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
+                  Abreviaturas Reconhecidas
+                </h3>
+              </div>
+            </ng-template>
+            <p-table [value]="abreviaturas" styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Abreviatura</th>
+                  <th>Nome Completo</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td><code class="bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded text-sm">{{ item.abrev }}</code></td>
+                  <td>{{ item.nome }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
+        </div>
+
+        <!-- Tabela de Categorias -->
+        <div 
+          pAnimateOnScroll 
+          enterClass="animate-enter fade-in-10 slide-in-from-r-8 animate-duration-1000"
+        >
+          <p-card>
+            <ng-template pTemplate="header">
+              <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+                <h3 class="text-xl font-bold text-surface-900 dark:text-surface-0">
+                  Categorias e Subcategorias
+                </h3>
+              </div>
+            </ng-template>
+            <p-table [value]="categorias" styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Categoria</th>
+                  <th>Subcategorias</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td><strong>{{ item.categoria }}</strong></td>
+                  <td><span class="text-sm text-surface-600 dark:text-surface-300">{{ item.subcategorias }}</span></td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
         </div>
       </div>
 
