@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -11,7 +11,8 @@ import { TagModule } from 'primeng/tag';
 import { FileParserService } from '../../core/services/file-parser.service';
 import { DataPipelineService } from '../../core/services/data-pipeline.service';
 import { AnalyticsService } from '../../core/services/analytics.service';
-import { ArquivoUpload, PreviewArquivo, ResultadoProcessamento } from '../../core/models/processamento.model';
+import { StorageService } from '../../core/services/storage.service';
+import { ArquivoUpload, PreviewArquivo, ResultadoProcessamento, AnalisesSalva } from '../../core/models/processamento.model';
 
 type EtapaProcessamento = 'upload' | 'lendo' | 'interpretando' | 'padronizando' | 'gerando' | 'concluido' | 'erro';
 
@@ -30,10 +31,11 @@ type EtapaProcessamento = 'upload' | 'lendo' | 'interpretando' | 'padronizando' 
   templateUrl: './analisador.component.html',
   styleUrl: './analisador.component.css'
 })
-export class AnalisadorComponent {
+export class AnalisadorComponent implements OnInit {
   private fileParser = inject(FileParserService);
   private dataPipeline = inject(DataPipelineService);
   private analytics = inject(AnalyticsService);
+  private storageService = inject(StorageService);
   private router = inject(Router);
 
   arquivos = signal<File[]>([]);
@@ -43,6 +45,7 @@ export class AnalisadorComponent {
   mensagemEtapa = signal<string>('');
   resultado = signal<ResultadoProcessamento | null>(null);
   erros = signal<string[]>([]);
+  analisesHistorico = signal<AnalisesSalva[]>([]);
 
   readonly etapas = [
     { key: 'lendo', label: 'Lendo arquivos', progresso: 20 },
@@ -51,6 +54,47 @@ export class AnalisadorComponent {
     { key: 'gerando', label: 'Gerando painel', progresso: 80 },
     { key: 'concluido', label: 'Concluído', progresso: 100 }
   ];
+
+  async ngOnInit(): Promise<void> {
+    await this.carregarHistorico();
+  }
+
+  async carregarHistorico(): Promise<void> {
+    try {
+      const analises = await this.storageService.listarAnalises();
+      this.analisesHistorico.set(analises);
+    } catch (error) {
+      console.error('Erro ao carregar histórico:', error);
+    }
+  }
+
+  async carregarAnalise(id: string): Promise<void> {
+    try {
+      const analise = await this.storageService.carregarAnalise(id);
+      if (analise) {
+        this.analytics.setVendas(analise.resultado.vendas);
+        this.router.navigate(['/painel']);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar análise:', error);
+      alert('Erro ao carregar análise. Tente novamente.');
+    }
+  }
+
+  async excluirAnalise(id: string): Promise<void> {
+    if (!confirm('Tem certeza que deseja excluir esta análise?')) {
+      return;
+    }
+
+    try {
+      await this.storageService.apagarAnalise(id);
+      await this.carregarHistorico();
+      alert('Análise excluída com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir análise:', error);
+      alert('Erro ao excluir análise. Tente novamente.');
+    }
+  }
 
   async onFileSelect(event: any): Promise<void> {
     const files: File[] = event.files || event.currentFiles || [];
